@@ -19,9 +19,11 @@ export default function Placeholder({
         aria-hidden
         className="absolute inset-0 paper-texture"
       />
-      <div className="absolute inset-0 flex items-center justify-center text-deep/55 font-serif text-sm tracking-wide uppercase">
-        {label || "Image placeholder"}
-      </div>
+      {label && (
+        <div className="absolute inset-0 flex items-center justify-center text-deep/55 font-serif text-sm tracking-wide uppercase">
+          {label}
+        </div>
+      )}
       {children}
     </div>
   );

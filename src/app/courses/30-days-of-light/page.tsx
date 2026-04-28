@@ -50,7 +50,7 @@ export default function ThirtyDaysOfLightPage() {
               </h1>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mt-4 font-serif text-2xl text-honey">
+              <p className="mt-4 font-serif font-semibold text-2xl text-honey">
                 A Healing Painting Journey from La Ruche, Paris
               </p>
             </Reveal>

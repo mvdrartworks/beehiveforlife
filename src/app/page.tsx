@@ -15,7 +15,6 @@ export default function HomePage() {
         <Placeholder
           ratio="aspect-[16/10] md:aspect-[21/9]"
           className="rounded-none"
-          label="Warm studio scene at La Ruche"
         >
           <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
           <div className="absolute inset-0 flex items-end md:items-center">
@@ -31,7 +30,7 @@ export default function HomePage() {
                 </h1>
               </Reveal>
               <Reveal delay={0.2}>
-                <p className="mt-5 font-serif text-2xl md:text-3xl text-honey">
+                <p className="mt-5 font-serif font-semibold text-2xl md:text-3xl text-honey">
                   A Creative Community Born at La Ruche
                 </p>
               </Reveal>
@@ -264,7 +263,7 @@ export default function HomePage() {
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mt-3 font-serif text-xl text-honey">
+              <p className="mt-3 font-serif font-semibold text-xl text-honey">
                 A Healing Painting Journey from La Ruche, Paris
               </p>
             </Reveal>

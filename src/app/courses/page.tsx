@@ -47,7 +47,7 @@ export default function CoursesPage() {
               <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
                 30 Days of Light
               </h2>
-              <p className="mt-3 font-serif text-xl text-honey">
+              <p className="mt-3 font-serif font-semibold text-xl text-honey">
                 A Healing Painting Journey from La Ruche, Paris
               </p>
 

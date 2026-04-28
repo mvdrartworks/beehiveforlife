@@ -14,7 +14,7 @@ const config: Config = {
           DEFAULT: "#3A3A3A",
           muted: "#6B6560",
         },
-        honey: "#D4A853",
+        honey: "#B8860B",
         terracotta: "#A0522D",
         deep: "#2C1810",
         card: "#FFFFFF",
