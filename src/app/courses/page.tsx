@@ -4,6 +4,7 @@ import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
+import { getFeaturedCourse } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Courses",
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
     "Courses from La Ruche, Paris. Art as transformation, taught by Michèle van de Roer.",
 };
 
-export default function CoursesPage() {
+export default async function CoursesPage() {
+  const course = await getFeaturedCourse();
+  const priceDisplay = `€${course.foundingPrice}`;
+  const originalDisplay = `€${course.originalPrice}`;
+
   return (
     <>
       <Section bg="warm">
@@ -37,7 +42,7 @@ export default function CoursesPage() {
           <article className="grid md:grid-cols-2 gap-10 bg-card rounded-2xl border border-honey/15 shadow-card overflow-hidden">
             <Placeholder
               ratio="aspect-[4/3] md:aspect-auto"
-              label="30 Days of Light"
+              label={course.title}
               className="rounded-none md:h-full"
             />
             <div className="p-8 md:p-12 flex flex-col justify-center">
@@ -45,10 +50,10 @@ export default function CoursesPage() {
                 Featured course
               </p>
               <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
-                30 Days of Light
+                {course.title}
               </h2>
               <p className="mt-3 font-serif font-semibold text-xl text-honey">
-                A Healing Painting Journey from La Ruche, Paris
+                {course.subtitle}
               </p>
 
               <dl className="mt-8 grid grid-cols-2 gap-4 text-sm">
@@ -56,24 +61,22 @@ export default function CoursesPage() {
                   <dt className="wordmark text-[0.7rem] text-charcoal-muted">
                     Duration
                   </dt>
-                  <dd className="mt-1 text-charcoal">6 weeks, 3 modules</dd>
+                  <dd className="mt-1 text-charcoal">{course.duration}</dd>
                 </div>
                 <div>
                   <dt className="wordmark text-[0.7rem] text-charcoal-muted">
                     Format
                   </dt>
-                  <dd className="mt-1 text-charcoal">
-                    Video lessons + weekly live Q&amp;A
-                  </dd>
+                  <dd className="mt-1 text-charcoal">{course.format}</dd>
                 </div>
                 <div>
                   <dt className="wordmark text-[0.7rem] text-charcoal-muted">
                     Founding price
                   </dt>
                   <dd className="mt-1 text-charcoal">
-                    €447{" "}
+                    {priceDisplay}{" "}
                     <span className="text-charcoal-muted line-through">
-                      €597
+                      {originalDisplay}
                     </span>
                   </dd>
                 </div>
@@ -86,14 +89,11 @@ export default function CoursesPage() {
               </dl>
 
               <div className="mt-6 text-sm text-charcoal-muted leading-relaxed">
-                <p>
-                  Seedling 10% · Worker Bee 15% · Queen&rsquo;s Court included
-                  · Golden Hive included
-                </p>
+                <p>{course.memberDiscountSummary}</p>
               </div>
 
               <div className="mt-8">
-                <ButtonLink href="/courses/30-days-of-light">
+                <ButtonLink href={`/courses/${course.slug}`}>
                   View course details →
                 </ButtonLink>
               </div>

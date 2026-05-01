@@ -4,9 +4,14 @@ import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
 import NewsletterForm from "@/components/NewsletterForm";
-import { MEMBERSHIP_TIERS } from "@/lib/membership";
+import { getMembership, getFeaturedCourse } from "@/lib/content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [membership, featuredCourse] = await Promise.all([
+    getMembership(),
+    getFeaturedCourse(),
+  ]);
+  const tiers = membership.tiers;
   return (
     <>
       {/* Hero */}
@@ -210,7 +215,7 @@ export default function HomePage() {
         </div>
 
         <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {MEMBERSHIP_TIERS.map((t, i) => (
+          {tiers.map((t, i) => (
             <Reveal key={t.slug} delay={i * 0.08}>
               <Link
                 href="/membership"
@@ -248,7 +253,7 @@ export default function HomePage() {
           <Reveal>
             <Placeholder
               ratio="aspect-video"
-              label="30 Days of Light, video teaser"
+              label={`${featuredCourse.title}, video teaser`}
             />
           </Reveal>
           <div>
@@ -259,26 +264,26 @@ export default function HomePage() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
-                30 Days of Light
+                {featuredCourse.title}
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
               <p className="mt-3 font-serif font-semibold text-xl text-honey">
-                A Healing Painting Journey from La Ruche, Paris
+                {featuredCourse.subtitle}
               </p>
             </Reveal>
             <Reveal delay={0.3}>
               <p className="mt-6 text-charcoal leading-relaxed">
-                6 weeks. 3 modules. One transformation.
+                {featuredCourse.tagline}
               </p>
             </Reveal>
             <Reveal delay={0.4}>
               <p className="mt-6">
                 <span className="font-serif text-3xl text-terracotta">
-                  €447
+                  €{featuredCourse.foundingPrice}
                 </span>
                 <span className="ml-3 text-sm text-charcoal-muted line-through">
-                  €597
+                  €{featuredCourse.originalPrice}
                 </span>
                 <span className="ml-2 text-sm text-charcoal-muted">
                   founding price
@@ -287,7 +292,7 @@ export default function HomePage() {
             </Reveal>
             <Reveal delay={0.5}>
               <div className="mt-8">
-                <ButtonLink href="/courses/30-days-of-light">
+                <ButtonLink href={`/courses/${featuredCourse.slug}`}>
                   Learn more →
                 </ButtonLink>
               </div>

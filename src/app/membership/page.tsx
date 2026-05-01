@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
-import { MEMBERSHIP_TIERS } from "@/lib/membership";
+import { getMembership, getFaqs } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Membership",
@@ -10,30 +10,12 @@ export const metadata: Metadata = {
     "Choose the Beehive for Life membership that fits your creative journey. Four tiers from Seedling to Golden Hive.",
 };
 
-const FAQ = [
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes, cancel monthly at any time. Annual memberships are non-refundable but you keep access until the end of your period.",
-  },
-  {
-    q: "Can I upgrade or downgrade?",
-    a: "Yes, at any time. Changes take effect on your next billing date.",
-  },
-  {
-    q: "Is this a course platform?",
-    a: "Beehive for Life is a community first. Courses are available separately or included in higher tiers.",
-  },
-  {
-    q: "Do I need to be an artist?",
-    a: "Not at all. Art lovers, collectors, and anyone curious about creative practice are welcome.",
-  },
-  {
-    q: "What is the 5% La Ruche donation?",
-    a: "5% of all membership and course fees go directly to the Fondation La Ruche-Seydoux to help preserve this historic artist compound.",
-  },
-];
+export default async function MembershipPage() {
+  const [membership, faqs] = await Promise.all([
+    getMembership(),
+    getFaqs("membership"),
+  ]);
 
-export default function MembershipPage() {
   return (
     <>
       <Section bg="warm">
@@ -56,7 +38,7 @@ export default function MembershipPage() {
 
       <Section bg="ivory">
         <div className="grid md:grid-cols-2 gap-6">
-          {MEMBERSHIP_TIERS.map((t, i) => (
+          {membership.tiers.map((t, i) => (
             <Reveal key={t.slug} delay={i * 0.08}>
               <article
                 className={`relative h-full rounded-2xl p-8 md:p-10 border transition-all duration-500 ease-hive hover:-translate-y-1 hover:shadow-warm ${
@@ -135,12 +117,12 @@ export default function MembershipPage() {
           </Reveal>
 
           <div className="mt-12 divide-y divide-honey/20 border-y border-honey/20">
-            {FAQ.map((item, i) => (
-              <Reveal key={item.q} delay={i * 0.05}>
+            {faqs.map((item, i) => (
+              <Reveal key={item.question} delay={i * 0.05}>
                 <details className="group py-6">
                   <summary className="flex items-center justify-between cursor-pointer list-none">
                     <span className="font-serif text-xl md:text-2xl text-deep pr-6">
-                      {item.q}
+                      {item.question}
                     </span>
                     <span
                       aria-hidden
@@ -150,7 +132,7 @@ export default function MembershipPage() {
                     </span>
                   </summary>
                   <p className="mt-4 text-charcoal leading-relaxed">
-                    {item.a}
+                    {item.answer}
                   </p>
                 </details>
               </Reveal>
