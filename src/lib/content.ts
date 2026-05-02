@@ -502,12 +502,14 @@ export type Homepage = {
   heroImage?: SanityImage;
   heroVideoUrl?: string;
   whatIsTitle: string;
+  whatIsImage?: SanityImage;
   whatIsDescription: PortableTextBlock[];
   founderQuote: string;
   founderImage?: SanityImage;
   founderBio: PortableTextBlock[];
   pillars: HomepagePillar[];
   larucheTitle: string;
+  larucheImage?: SanityImage;
   larucheDescription: PortableTextBlock[];
   larucheDonationNote: string;
   newsletterTitle: string;
@@ -564,6 +566,7 @@ export const FALLBACK_HOMEPAGE: Homepage = {
   heroImage: undefined,
   heroVideoUrl: undefined,
   whatIsTitle: "A community for artists and art lovers, born at La Ruche.",
+  whatIsImage: undefined,
   whatIsDescription: paragraphsToPortableText([
     "Art is more powerful when shared. Beehive for Life was born from the same spirit that has animated La Ruche for over 120 years, the belief that artists need each other.",
   ]),
@@ -593,6 +596,7 @@ export const FALLBACK_HOMEPAGE: Homepage = {
     },
   ],
   larucheTitle: "Born at La Ruche, the Beehive of Paris.",
+  larucheImage: undefined,
   larucheDescription: paragraphsToPortableText([
     "La Ruche has been home to Chagall, Modigliani, Rivera, and generations of artists since 1902. Beehive for Life carries that legacy into the digital age.",
   ]),
@@ -667,12 +671,14 @@ const HOMEPAGE_QUERY = `*[_type == "beehiveHomepage"][0]{
   heroImage,
   heroVideoUrl,
   whatIsTitle,
+  whatIsImage,
   whatIsDescription,
   founderQuote,
   founderImage,
   founderBio,
   pillars[]{ title, description, icon },
   larucheTitle,
+  larucheImage,
   larucheDescription,
   larucheDonationNote,
   newsletterTitle,

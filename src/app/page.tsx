@@ -70,23 +70,26 @@ export default async function HomePage() {
       <Section bg="ivory">
         <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
           <Reveal className="md:col-span-2">
-            {homepage.founderImage?.asset ? (
-              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
-                <Image
-                  src={urlFor(homepage.founderImage).width(800).url()}
-                  alt={homepage.founderImage.alt || "Michèle van de Roer"}
-                  fill
-                  sizes="(min-width: 768px) 33vw, 80vw"
-                  className="object-cover"
+            {(() => {
+              const img = homepage.whatIsImage ?? homepage.founderImage;
+              return img?.asset ? (
+                <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
+                  <Image
+                    src={urlFor(img).width(800).url()}
+                    alt={img.alt || homepage.whatIsTitle}
+                    fill
+                    sizes="(min-width: 768px) 33vw, 80vw"
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <Placeholder
+                  ratio="aspect-[4/5]"
+                  label="Portrait of Michèle van de Roer"
+                  className="max-w-sm"
                 />
-              </div>
-            ) : (
-              <Placeholder
-                ratio="aspect-[4/5]"
-                label="Portrait of Michèle van de Roer"
-                className="max-w-sm"
-              />
-            )}
+              );
+            })()}
           </Reveal>
           <div className="md:col-span-3">
             <Reveal>
@@ -181,10 +184,22 @@ export default async function HomePage() {
             </Reveal>
           </div>
           <Reveal className="md:col-span-2 order-1 md:order-2">
-            <Placeholder
-              ratio="aspect-[4/5]"
-              label="La Ruche, Passage de Dantzig"
-            />
+            {homepage.larucheImage?.asset ? (
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl shadow-card">
+                <Image
+                  src={urlFor(homepage.larucheImage).width(800).url()}
+                  alt={homepage.larucheImage.alt || homepage.larucheTitle}
+                  fill
+                  sizes="(min-width: 768px) 33vw, 80vw"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <Placeholder
+                ratio="aspect-[4/5]"
+                label="La Ruche, Passage de Dantzig"
+              />
+            )}
           </Reveal>
         </div>
       </Section>
