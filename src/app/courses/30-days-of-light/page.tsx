@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
 import VideoEmbed from "@/components/VideoEmbed";
 import { getCourse } from "@/lib/content";
+import { urlFor } from "@/lib/sanity";
 
 export const metadata: Metadata = {
   title: "30 Days of Light",
   description:
     "A Healing Painting Journey from La Ruche, Paris. Six weeks, three modules, taught by Michèle van de Roer.",
 };
+
+// Re-fetch from Sanity at most once per minute so artist edits in Studio
+// show up without a redeploy.
+export const revalidate = 60;
 
 export default async function ThirtyDaysOfLightPage() {
   const course = await getCourse("30-days-of-light");
@@ -55,6 +61,17 @@ export default async function ThirtyDaysOfLightPage() {
                 url={course.introVideoUrl}
                 title={`${course.title} – intro video`}
               />
+            ) : course.heroImage?.asset ? (
+              <div className="relative aspect-video w-full overflow-hidden rounded-2xl shadow-card">
+                <Image
+                  src={urlFor(course.heroImage).width(1600).url()}
+                  alt={course.heroImage.alt || course.title}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
             ) : (
               <Placeholder
                 ratio="aspect-video"

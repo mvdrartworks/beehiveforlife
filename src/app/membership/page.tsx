@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "Choose the Beehive for Life membership that fits your creative journey. Four tiers from Seedling to Golden Hive.",
 };
 
+export const revalidate = 60;
+
 export default async function MembershipPage() {
   const [membership, faqs] = await Promise.all([
     getMembership(),

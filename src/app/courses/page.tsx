@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
+import VideoEmbed from "@/components/VideoEmbed";
 import { getFeaturedCourse } from "@/lib/content";
+import { urlFor } from "@/lib/sanity";
 
 export const metadata: Metadata = {
   title: "Courses",
   description:
     "Courses from La Ruche, Paris. Art as transformation, taught by Michèle van de Roer.",
 };
+
+export const revalidate = 60;
 
 export default async function CoursesPage() {
   const course = await getFeaturedCourse();
@@ -40,11 +45,30 @@ export default async function CoursesPage() {
       <Section bg="ivory">
         <Reveal>
           <article className="grid md:grid-cols-2 gap-10 bg-card rounded-2xl border border-honey/15 shadow-card overflow-hidden">
-            <Placeholder
-              ratio="aspect-[4/3] md:aspect-auto"
-              label={course.title}
-              className="rounded-none md:h-full"
-            />
+            {course.heroImage?.asset ? (
+              <div className="relative aspect-[4/3] md:aspect-auto md:h-full w-full overflow-hidden">
+                <Image
+                  src={urlFor(course.heroImage).width(1600).url()}
+                  alt={course.heroImage.alt || course.title}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            ) : course.introVideoUrl ? (
+              <VideoEmbed
+                url={course.introVideoUrl}
+                title={`${course.title} – intro video`}
+                className="rounded-none md:h-full"
+              />
+            ) : (
+              <Placeholder
+                ratio="aspect-[4/3] md:aspect-auto"
+                label={course.title}
+                className="rounded-none md:h-full"
+              />
+            )}
             <div className="p-8 md:p-12 flex flex-col justify-center">
               <p className="wordmark text-xs text-terracotta">
                 Featured course

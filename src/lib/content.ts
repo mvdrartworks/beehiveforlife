@@ -1,6 +1,14 @@
 import { sanityFetch } from "./sanity";
 import { MEMBERSHIP_TIERS, type MembershipTier } from "./membership";
 
+export type SanityImage = {
+  _type?: string;
+  asset?: { _ref?: string; _type?: string };
+  alt?: string;
+  hotspot?: { x: number; y: number; height: number; width: number };
+  crop?: { top: number; bottom: number; left: number; right: number };
+};
+
 export type CourseLesson = {
   title: string;
   description?: string;
@@ -27,6 +35,7 @@ export type Course = {
   title: string;
   subtitle: string;
   tagline: string;
+  heroImage?: SanityImage;
   introVideoUrl?: string;
   description: string;
   duration: string;
@@ -322,6 +331,7 @@ const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]{
   title,
   subtitle,
   tagline,
+  heroImage,
   introVideoUrl,
   description,
   duration,
@@ -357,6 +367,7 @@ const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] |
   title,
   subtitle,
   tagline,
+  heroImage,
   introVideoUrl,
   description,
   duration,

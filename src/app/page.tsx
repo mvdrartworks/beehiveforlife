@@ -6,6 +6,8 @@ import Placeholder from "@/components/Placeholder";
 import NewsletterForm from "@/components/NewsletterForm";
 import { getMembership, getFeaturedCourse } from "@/lib/content";
 
+export const revalidate = 60;
+
 export default async function HomePage() {
   const [membership, featuredCourse] = await Promise.all([
     getMembership(),
