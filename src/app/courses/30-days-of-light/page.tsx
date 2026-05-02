@@ -3,6 +3,7 @@ import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
+import VideoEmbed from "@/components/VideoEmbed";
 import { getCourse } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -49,10 +50,17 @@ export default async function ThirtyDaysOfLightPage() {
             </Reveal>
           </div>
           <Reveal delay={0.2}>
-            <Placeholder
-              ratio="aspect-video"
-              label="Course teaser, filmed at La Ruche"
-            />
+            {course.introVideoUrl ? (
+              <VideoEmbed
+                url={course.introVideoUrl}
+                title={`${course.title} – intro video`}
+              />
+            ) : (
+              <Placeholder
+                ratio="aspect-video"
+                label="Course teaser, filmed at La Ruche"
+              />
+            )}
           </Reveal>
         </div>
       </Section>
@@ -85,20 +93,78 @@ export default async function ThirtyDaysOfLightPage() {
           </h2>
         </Reveal>
 
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
-          {course.modules.map((m, i) => (
-            <Reveal key={m.n} delay={i * 0.1}>
-              <article className="bg-card rounded-2xl p-8 h-full border border-honey/15 shadow-card hover:-translate-y-1 hover:shadow-warm transition-all duration-500 ease-hive">
-                <p className="font-serif text-5xl text-honey">{m.n}</p>
-                <h3 className="mt-4 font-serif text-2xl text-deep">
-                  Module {m.n}: {m.title}
-                </h3>
-                <p className="mt-3 text-charcoal-muted leading-relaxed">
-                  {m.body}
-                </p>
-              </article>
-            </Reveal>
-          ))}
+        <div className="mt-12 space-y-6">
+          {course.modules.map((m, i) => {
+            const moduleNumber = String(i + 1).padStart(2, "0");
+            const lessons = m.lessons ?? [];
+            return (
+              <Reveal key={`${moduleNumber}-${m.title}`} delay={i * 0.08}>
+                <article className="bg-card rounded-2xl border border-honey/15 shadow-card overflow-hidden">
+                  <header className="p-8 md:p-10 border-b border-honey/15">
+                    <div className="flex items-baseline gap-4 flex-wrap">
+                      <p className="font-serif text-5xl text-honey leading-none">
+                        {moduleNumber}
+                      </p>
+                      <h3 className="font-serif text-2xl md:text-3xl text-deep">
+                        Module {moduleNumber}: {m.title}
+                      </h3>
+                    </div>
+                    {m.description && (
+                      <p className="mt-4 text-charcoal-muted leading-relaxed max-w-2xl">
+                        {m.description}
+                      </p>
+                    )}
+                  </header>
+                  {lessons.length > 0 && (
+                    <ol className="divide-y divide-honey/15">
+                      {lessons.map((lesson) => (
+                        <li
+                          key={lesson.title}
+                          className="px-8 md:px-10 py-5 flex items-start gap-4"
+                        >
+                          <span
+                            aria-hidden
+                            className={`mt-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm ${
+                              lesson.videoUrl
+                                ? "bg-honey/20 text-terracotta"
+                                : "bg-honey/10 text-charcoal-muted"
+                            }`}
+                            title={
+                              lesson.videoUrl ? "Video lesson" : "Lesson"
+                            }
+                          >
+                            {lesson.videoUrl ? "▶" : "·"}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-3 flex-wrap">
+                              <h4 className="font-serif text-lg md:text-xl text-deep">
+                                {lesson.title}
+                              </h4>
+                              {lesson.isFree && (
+                                <span className="text-[0.65rem] tracking-widest uppercase bg-terracotta text-cream px-2 py-0.5 rounded-full">
+                                  Preview
+                                </span>
+                              )}
+                            </div>
+                            {lesson.description && (
+                              <p className="mt-1 text-sm text-charcoal-muted leading-relaxed">
+                                {lesson.description}
+                              </p>
+                            )}
+                          </div>
+                          {lesson.duration && (
+                            <span className="shrink-0 text-xs text-charcoal-muted wordmark mt-2">
+                              {lesson.duration}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                </article>
+              </Reveal>
+            );
+          })}
         </div>
       </Section>
 

@@ -1,10 +1,20 @@
 import { sanityFetch } from "./sanity";
 import { MEMBERSHIP_TIERS, type MembershipTier } from "./membership";
 
-export type CourseModule = {
-  n: string;
+export type CourseLesson = {
   title: string;
-  body: string;
+  description?: string;
+  videoUrl?: string;
+  duration?: string;
+  order?: number;
+  isFree?: boolean;
+};
+
+export type CourseModule = {
+  title: string;
+  description?: string;
+  order?: number;
+  lessons?: CourseLesson[];
 };
 
 export type CourseDiscount = {
@@ -17,6 +27,7 @@ export type Course = {
   title: string;
   subtitle: string;
   tagline: string;
+  introVideoUrl?: string;
   description: string;
   duration: string;
   format: string;
@@ -60,16 +71,98 @@ export const FALLBACK_COURSE_30_DAYS: Course = {
   memberDiscountSummary:
     "Seedling 10% · Worker Bee 15% · Queen’s Court included · Golden Hive included",
   modules: [
-    { n: "01", title: "Working from Love", body: "Begin with what moves you." },
     {
-      n: "02",
-      title: "Working from Dislike",
-      body: "Transform resistance into creative fuel.",
+      title: "Working from Love",
+      description: "Begin with what moves you.",
+      order: 1,
+      lessons: [
+        {
+          title: "Lesson 1: Finding your starting point",
+          description:
+            "Identify the subjects, colors, and gestures that already pull you. The painting starts here.",
+          duration: "15 min",
+          order: 1,
+          isFree: true,
+        },
+        {
+          title: "Lesson 2: A palette of love",
+          description:
+            "Build a working palette from the colors that recur in the things you love.",
+          duration: "20 min",
+          order: 2,
+          isFree: false,
+        },
+        {
+          title: "Lesson 3: Brushwork and tenderness",
+          description:
+            "Loosen the hand. The mark of love is rarely tight.",
+          duration: "18 min",
+          order: 3,
+          isFree: false,
+        },
+      ],
     },
     {
-      n: "03",
+      title: "Working from Dislike",
+      description: "Transform resistance into creative fuel.",
+      order: 2,
+      lessons: [
+        {
+          title: "Lesson 1: Naming what you resist",
+          description:
+            "Make a list. The things you can't bear to paint are the things that change you.",
+          duration: "12 min",
+          order: 1,
+          isFree: true,
+        },
+        {
+          title: "Lesson 2: Painting the discomfort",
+          description:
+            "Stay on the canvas. We work with the discomfort, not around it.",
+          duration: "22 min",
+          order: 2,
+          isFree: false,
+        },
+        {
+          title: "Lesson 3: The transformation moment",
+          description:
+            "Recognise the pivot when resistance turns into a new image.",
+          duration: "20 min",
+          order: 3,
+          isFree: false,
+        },
+      ],
+    },
+    {
       title: "Self-Portrait Journey",
-      body: "Meet yourself on the canvas.",
+      description: "Meet yourself on the canvas.",
+      order: 3,
+      lessons: [
+        {
+          title: "Lesson 1: Looking in the mirror",
+          description:
+            "First sittings. We are not after likeness, we are after presence.",
+          duration: "16 min",
+          order: 1,
+          isFree: true,
+        },
+        {
+          title: "Lesson 2: First marks",
+          description:
+            "Begin the self-portrait. Permission to be wrong is part of the lesson.",
+          duration: "24 min",
+          order: 2,
+          isFree: false,
+        },
+        {
+          title: "Lesson 3: Layers of the self",
+          description:
+            "Building a portrait that holds the contradictions.",
+          duration: "26 min",
+          order: 3,
+          isFree: false,
+        },
+      ],
     },
   ],
   formatDetails: [
@@ -229,6 +322,7 @@ const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]{
   title,
   subtitle,
   tagline,
+  introVideoUrl,
   description,
   duration,
   format,
@@ -236,7 +330,19 @@ const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]{
   originalPrice,
   currency,
   memberDiscountSummary,
-  modules,
+  modules[]{
+    title,
+    description,
+    order,
+    lessons[]{
+      title,
+      description,
+      videoUrl,
+      duration,
+      order,
+      isFree
+    }
+  },
   formatDetails,
   memberDiscounts,
   privateSessionsPrice,
@@ -251,6 +357,7 @@ const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] |
   title,
   subtitle,
   tagline,
+  introVideoUrl,
   description,
   duration,
   format,
@@ -258,7 +365,19 @@ const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] |
   originalPrice,
   currency,
   memberDiscountSummary,
-  modules,
+  modules[]{
+    title,
+    description,
+    order,
+    lessons[]{
+      title,
+      description,
+      videoUrl,
+      duration,
+      order,
+      isFree
+    }
+  },
   formatDetails,
   memberDiscounts,
   privateSessionsPrice,
