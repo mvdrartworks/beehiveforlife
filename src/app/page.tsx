@@ -1,80 +1,92 @@
+import Image from "next/image";
 import Link from "next/link";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
 import NewsletterForm from "@/components/NewsletterForm";
-import { getMembership, getFeaturedCourse } from "@/lib/content";
+import VideoEmbed from "@/components/VideoEmbed";
+import RichText from "@/components/RichText";
+import {
+  getHomepage,
+  getMembership,
+  getFeaturedCourse,
+  getTestimonials,
+} from "@/lib/content";
+import { urlFor } from "@/lib/sanity";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [membership, featuredCourse] = await Promise.all([
-    getMembership(),
-    getFeaturedCourse(),
-  ]);
+  const [homepage, membership, featuredCourse, testimonials] =
+    await Promise.all([
+      getHomepage(),
+      getMembership(),
+      getFeaturedCourse(),
+      getTestimonials(),
+    ]);
   const tiers = membership.tiers;
+
   return (
     <>
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 bg-warm-radial" />
-        <Placeholder
-          ratio="aspect-[16/10] md:aspect-[21/9]"
-          className="rounded-none"
-        >
-          <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
-          <div className="absolute inset-0 flex items-end md:items-center">
-            <div className="mx-auto max-w-7xl w-full px-6 lg:px-10 pb-12 md:pb-0 text-cream">
-              <Reveal>
-                <p className="font-sans text-sm md:text-base wordmark text-honey">
-                  Born at La Ruche, Paris
-                </p>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <h1 className="mt-4 font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-cream">
-                  Beehive for Life
-                </h1>
-              </Reveal>
-              <Reveal delay={0.2}>
-                <p className="mt-5 font-serif font-semibold text-2xl md:text-3xl text-honey">
-                  A Creative Community Born at La Ruche
-                </p>
-              </Reveal>
-              <Reveal delay={0.3}>
-                <p className="mt-4 max-w-xl text-base md:text-lg text-cream/85 leading-relaxed">
-                  Join artists and art lovers from around the world. Learn,
-                  connect, create.
-                </p>
-              </Reveal>
-              <Reveal delay={0.4}>
-                <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                  <ButtonLink href="/membership" variant="primary">
-                    Explore Membership
-                  </ButtonLink>
-                  <ButtonLink
-                    href="/courses"
-                    variant="secondary"
-                    className="bg-cream/15 border-cream/40 text-cream hover:bg-cream/25"
-                  >
-                    Browse Courses
-                  </ButtonLink>
-                </div>
-              </Reveal>
-            </div>
+        {homepage.heroVideoUrl ? (
+          <div className="relative aspect-[16/10] md:aspect-[21/9] w-full overflow-hidden">
+            <VideoEmbed
+              url={homepage.heroVideoUrl}
+              title={`${homepage.heroTitle} – hero`}
+              className="!rounded-none !shadow-none absolute inset-0 h-full"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55 pointer-events-none" />
+            <HeroOverlay homepage={homepage} />
           </div>
-        </Placeholder>
+        ) : homepage.heroImage?.asset ? (
+          <div className="relative aspect-[16/10] md:aspect-[21/9] w-full overflow-hidden">
+            <Image
+              src={urlFor(homepage.heroImage).width(2400).url()}
+              alt={homepage.heroImage.alt || homepage.heroTitle}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
+            <HeroOverlay homepage={homepage} />
+          </div>
+        ) : (
+          <Placeholder
+            ratio="aspect-[16/10] md:aspect-[21/9]"
+            className="rounded-none"
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
+            <HeroOverlay homepage={homepage} />
+          </Placeholder>
+        )}
       </section>
 
       {/* What is Beehive */}
       <Section bg="ivory">
         <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
           <Reveal className="md:col-span-2">
-            <Placeholder
-              ratio="aspect-[4/5]"
-              label="Portrait of Michèle van de Roer"
-              className="max-w-sm"
-            />
+            {homepage.founderImage?.asset ? (
+              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
+                <Image
+                  src={urlFor(homepage.founderImage).width(800).url()}
+                  alt={homepage.founderImage.alt || "Michèle van de Roer"}
+                  fill
+                  sizes="(min-width: 768px) 33vw, 80vw"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <Placeholder
+                ratio="aspect-[4/5]"
+                label="Portrait of Michèle van de Roer"
+                className="max-w-sm"
+              />
+            )}
           </Reveal>
           <div className="md:col-span-3">
             <Reveal>
@@ -84,21 +96,22 @@ export default async function HomePage() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="mt-4 font-serif text-4xl md:text-5xl text-deep leading-tight">
-                A community for artists and art lovers, born at La Ruche.
+                {homepage.whatIsTitle}
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
-              <blockquote className="mt-8 border-l-2 border-honey pl-6 font-serif text-xl md:text-2xl text-charcoal leading-relaxed italic">
-                &ldquo;Art is more powerful when shared. Beehive for Life was
-                born from the same spirit that has animated La Ruche for over
-                120 years, the belief that artists need each other.&rdquo;
-              </blockquote>
+              <RichText
+                blocks={homepage.whatIsDescription}
+                className="mt-8 border-l-2 border-honey pl-6 font-serif text-xl md:text-2xl text-charcoal leading-relaxed italic space-y-4"
+              />
             </Reveal>
-            <Reveal delay={0.3}>
-              <p className="mt-4 text-charcoal-muted text-sm">
-                Michèle van de Roer, founder
-              </p>
-            </Reveal>
+            {homepage.founderQuote && (
+              <Reveal delay={0.3}>
+                <p className="mt-4 text-charcoal-muted text-sm">
+                  {homepage.founderQuote}
+                </p>
+              </Reveal>
+            )}
           </div>
         </div>
       </Section>
@@ -116,29 +129,13 @@ export default async function HomePage() {
           </h2>
         </Reveal>
         <div className="mt-14 grid md:grid-cols-3 gap-6">
-          {[
-            {
-              title: "Community",
-              body: "Connect with artists worldwide. Studio exchanges, meetups, critique circles, and a global network of creative practitioners.",
-              icon: "🐝",
-            },
-            {
-              title: "Learn",
-              body: "Courses taught from La Ruche by Michèle van de Roer. Technique meets healing. Art as transformation.",
-              icon: "🎨",
-            },
-            {
-              title: "Experience",
-              body: "Curated exhibitions, gallery walks, artist interviews, and behind-the-scenes access to one of the world's most historic art studios.",
-              icon: "🏛",
-            },
-          ].map((p, i) => (
+          {homepage.pillars.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.1}>
               <article className="group bg-card rounded-2xl p-8 h-full border border-honey/15 shadow-card hover:-translate-y-1 hover:shadow-warm transition-all duration-500 ease-hive">
-                <div className="text-3xl mb-4">{p.icon}</div>
+                {p.icon && <div className="text-3xl mb-4">{p.icon}</div>}
                 <h3 className="font-serif text-2xl text-deep">{p.title}</h3>
                 <p className="mt-3 text-charcoal-muted leading-relaxed">
-                  {p.body}
+                  {p.description}
                 </p>
               </article>
             </Reveal>
@@ -155,23 +152,22 @@ export default async function HomePage() {
             </Reveal>
             <Reveal delay={0.1}>
               <h2 className="mt-4 font-serif text-4xl md:text-5xl text-deep leading-tight">
-                Born at La Ruche, the Beehive of Paris.
+                {homepage.larucheTitle}
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mt-6 text-lg text-charcoal leading-relaxed">
-                La Ruche has been home to Chagall, Modigliani, Rivera, and
-                generations of artists since 1902. Beehive for Life carries
-                that legacy into the digital age.
-              </p>
+              <RichText
+                blocks={homepage.larucheDescription}
+                className="mt-6 text-lg text-charcoal leading-relaxed space-y-4"
+              />
             </Reveal>
-            <Reveal delay={0.3}>
-              <p className="mt-4 text-charcoal-muted leading-relaxed">
-                5% of all membership and course fees are donated to the
-                Fondation La Ruche-Seydoux to help preserve this irreplaceable
-                monument.
-              </p>
-            </Reveal>
+            {homepage.larucheDonationNote && (
+              <Reveal delay={0.3}>
+                <p className="mt-4 text-charcoal-muted leading-relaxed">
+                  {homepage.larucheDonationNote}
+                </p>
+              </Reveal>
+            )}
             <Reveal delay={0.4}>
               <a
                 href="https://michelevanderoer.com/la-ruche"
@@ -253,10 +249,29 @@ export default async function HomePage() {
       <Section bg="cream">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <Reveal>
-            <Placeholder
-              ratio="aspect-video"
-              label={`${featuredCourse.title}, video teaser`}
-            />
+            {featuredCourse.introVideoUrl ? (
+              <VideoEmbed
+                url={featuredCourse.introVideoUrl}
+                title={`${featuredCourse.title} – intro video`}
+              />
+            ) : featuredCourse.heroImage?.asset ? (
+              <div className="relative aspect-video w-full overflow-hidden rounded-2xl shadow-card">
+                <Image
+                  src={urlFor(featuredCourse.heroImage).width(1600).url()}
+                  alt={
+                    featuredCourse.heroImage.alt || featuredCourse.title
+                  }
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <Placeholder
+                ratio="aspect-video"
+                label={`${featuredCourse.title}, video teaser`}
+              />
+            )}
           </Reveal>
           <div>
             <Reveal>
@@ -295,7 +310,7 @@ export default async function HomePage() {
             <Reveal delay={0.5}>
               <div className="mt-8">
                 <ButtonLink href={`/courses/${featuredCourse.slug}`}>
-                  Learn more →
+                  View course details →
                 </ButtonLink>
               </div>
             </Reveal>
@@ -307,11 +322,23 @@ export default async function HomePage() {
       <Section bg="ivory">
         <div className="grid md:grid-cols-5 gap-12 items-center">
           <Reveal className="md:col-span-2">
-            <Placeholder
-              ratio="aspect-[4/5]"
-              label="Michèle van de Roer in studio"
-              className="max-w-sm"
-            />
+            {homepage.founderImage?.asset ? (
+              <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl shadow-card">
+                <Image
+                  src={urlFor(homepage.founderImage).width(800).url()}
+                  alt={homepage.founderImage.alt || "Michèle van de Roer"}
+                  fill
+                  sizes="(min-width: 768px) 33vw, 80vw"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <Placeholder
+                ratio="aspect-[4/5]"
+                label="Michèle van de Roer in studio"
+                className="max-w-sm"
+              />
+            )}
           </Reveal>
           <div className="md:col-span-3">
             <Reveal>
@@ -323,13 +350,10 @@ export default async function HomePage() {
               </h2>
             </Reveal>
             <Reveal delay={0.2}>
-              <p className="mt-6 text-lg text-charcoal leading-relaxed">
-                Michèle van de Roer is a Dutch-born, Paris-based multimedia
-                artist working from La Ruche. Her work is held in the Rodin
-                Museum, the Bibliothèque Nationale de France, and private
-                collections worldwide. She is represented by Galerie Paul
-                Prouté (Paris) and Galerie Mourlot (New York).
-              </p>
+              <RichText
+                blocks={homepage.founderBio}
+                className="mt-6 text-lg text-charcoal leading-relaxed space-y-4"
+              />
             </Reveal>
             <Reveal delay={0.3}>
               <a
@@ -360,27 +384,8 @@ export default async function HomePage() {
         </Reveal>
 
         <div className="mt-14 grid md:grid-cols-3 gap-6">
-          {[
-            {
-              quote:
-                "A real community. The studio exchange brought me to Lisbon, and a Lisbon painter to my studio in Berlin.",
-              name: "Member testimonial",
-              role: "Worker Bee member",
-            },
-            {
-              quote:
-                "The course was the most generous teaching I have ever received. Michèle's voice is in the room.",
-              name: "Member testimonial",
-              role: "30 Days of Light graduate",
-            },
-            {
-              quote:
-                "I joined to support La Ruche. I stayed for the people I met inside the hive.",
-              name: "Member testimonial",
-              role: "Golden Hive patron",
-            },
-          ].map((t, i) => (
-            <Reveal key={i} delay={i * 0.1}>
+          {testimonials.map((t, i) => (
+            <Reveal key={`${t.name}-${i}`} delay={i * 0.1}>
               <article className="bg-card rounded-2xl p-8 h-full border border-honey/15 shadow-card">
                 <p className="font-serif text-xl text-charcoal leading-relaxed italic">
                   &ldquo;{t.quote}&rdquo;
@@ -419,15 +424,16 @@ export default async function HomePage() {
           </Reveal>
           <Reveal delay={0.1}>
             <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep">
-              Join the hive
+              {homepage.newsletterTitle}
             </h2>
           </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-4 text-charcoal-muted leading-relaxed">
-              Get updates, inspiration, and early access to new courses and
-              events.
-            </p>
-          </Reveal>
+          {homepage.newsletterDescription && (
+            <Reveal delay={0.2}>
+              <p className="mt-4 text-charcoal-muted leading-relaxed">
+                {homepage.newsletterDescription}
+              </p>
+            </Reveal>
+          )}
           <Reveal delay={0.3}>
             <div className="mt-8 flex justify-center">
               <NewsletterForm compact />
@@ -436,5 +442,56 @@ export default async function HomePage() {
         </div>
       </Section>
     </>
+  );
+}
+
+function HeroOverlay({
+  homepage,
+}: {
+  homepage: { heroTitle: string; heroSubtitle: string; heroDescription: string };
+}) {
+  return (
+    <div className="absolute inset-0 flex items-end md:items-center pointer-events-none">
+      <div className="mx-auto max-w-7xl w-full px-6 lg:px-10 pb-12 md:pb-0 text-cream pointer-events-auto">
+        <Reveal>
+          <p className="font-sans text-sm md:text-base wordmark text-honey">
+            Born at La Ruche, Paris
+          </p>
+        </Reveal>
+        <Reveal delay={0.1}>
+          <h1 className="mt-4 font-serif text-5xl md:text-7xl lg:text-8xl leading-[1.05] text-cream">
+            {homepage.heroTitle}
+          </h1>
+        </Reveal>
+        {homepage.heroSubtitle && (
+          <Reveal delay={0.2}>
+            <p className="mt-5 font-serif font-semibold text-2xl md:text-3xl text-honey">
+              {homepage.heroSubtitle}
+            </p>
+          </Reveal>
+        )}
+        {homepage.heroDescription && (
+          <Reveal delay={0.3}>
+            <p className="mt-4 max-w-xl text-base md:text-lg text-cream/85 leading-relaxed">
+              {homepage.heroDescription}
+            </p>
+          </Reveal>
+        )}
+        <Reveal delay={0.4}>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <ButtonLink href="/membership" variant="primary">
+              Explore Membership
+            </ButtonLink>
+            <ButtonLink
+              href="/courses"
+              variant="secondary"
+              className="bg-cream/15 border-cream/40 text-cream hover:bg-cream/25"
+            >
+              Browse Courses
+            </ButtonLink>
+          </div>
+        </Reveal>
+      </div>
+    </div>
   );
 }

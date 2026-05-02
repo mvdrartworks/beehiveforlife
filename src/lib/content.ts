@@ -469,3 +469,314 @@ export async function getFaqs(category: string): Promise<Faq[]> {
   if (Array.isArray(result) && result.length > 0) return result;
   return fallback;
 }
+
+// ---------------------------------------------------------------------------
+// Homepage / About page / Testimonials
+// ---------------------------------------------------------------------------
+
+export type PortableTextSpan = {
+  _type: "span";
+  _key?: string;
+  text: string;
+  marks?: string[];
+};
+
+export type PortableTextBlock = {
+  _type: "block";
+  _key?: string;
+  style?: string;
+  children: PortableTextSpan[];
+  markDefs?: unknown[];
+};
+
+export type HomepagePillar = {
+  title: string;
+  description: string;
+  icon?: string;
+};
+
+export type Homepage = {
+  heroTitle: string;
+  heroSubtitle: string;
+  heroDescription: string;
+  heroImage?: SanityImage;
+  heroVideoUrl?: string;
+  whatIsTitle: string;
+  whatIsDescription: PortableTextBlock[];
+  founderQuote: string;
+  founderImage?: SanityImage;
+  founderBio: PortableTextBlock[];
+  pillars: HomepagePillar[];
+  larucheTitle: string;
+  larucheDescription: PortableTextBlock[];
+  larucheDonationNote: string;
+  newsletterTitle: string;
+  newsletterDescription: string;
+};
+
+export type AboutPage = {
+  heroEyebrow: string;
+  heroTitle: string;
+  storyEyebrow: string;
+  storyTitle: string;
+  storyImage?: SanityImage;
+  storyBody: PortableTextBlock[];
+  founderEyebrow: string;
+  founderTitle: string;
+  founderImage?: SanityImage;
+  founderBio: PortableTextBlock[];
+  founderLinkLabel: string;
+  founderLinkUrl: string;
+  larucheEyebrow: string;
+  larucheTitle: string;
+  larucheBody: PortableTextBlock[];
+  larucheLinkLabel: string;
+  larucheLinkUrl: string;
+};
+
+export type Testimonial = {
+  quote: string;
+  name: string;
+  role: string;
+  featured?: boolean;
+  order?: number;
+};
+
+function block(text: string, key: string): PortableTextBlock {
+  return {
+    _type: "block",
+    _key: `b-${key}`,
+    style: "normal",
+    children: [{ _type: "span", _key: `s-${key}`, text }],
+    markDefs: [],
+  };
+}
+
+function paragraphsToPortableText(paragraphs: string[]): PortableTextBlock[] {
+  return paragraphs.map((p, i) => block(p, String(i)));
+}
+
+export const FALLBACK_HOMEPAGE: Homepage = {
+  heroTitle: "Beehive for Life",
+  heroSubtitle: "A Creative Community Born at La Ruche",
+  heroDescription:
+    "Join artists and art lovers from around the world. Learn, connect, create.",
+  heroImage: undefined,
+  heroVideoUrl: undefined,
+  whatIsTitle: "A community for artists and art lovers, born at La Ruche.",
+  whatIsDescription: paragraphsToPortableText([
+    "Art is more powerful when shared. Beehive for Life was born from the same spirit that has animated La Ruche for over 120 years, the belief that artists need each other.",
+  ]),
+  founderQuote: "Michèle van de Roer, founder",
+  founderImage: undefined,
+  founderBio: paragraphsToPortableText([
+    "Michèle van de Roer is a Dutch-born, Paris-based multimedia artist working from La Ruche. Her work is held in the Rodin Museum, the Bibliothèque Nationale de France, and private collections worldwide. She is represented by Galerie Paul Prouté (Paris) and Galerie Mourlot (New York).",
+  ]),
+  pillars: [
+    {
+      title: "Community",
+      description:
+        "Connect with artists worldwide. Studio exchanges, meetups, critique circles, and a global network of creative practitioners.",
+      icon: "🐝",
+    },
+    {
+      title: "Learn",
+      description:
+        "Courses taught from La Ruche by Michèle van de Roer. Technique meets healing. Art as transformation.",
+      icon: "🎨",
+    },
+    {
+      title: "Experience",
+      description:
+        "Curated exhibitions, gallery walks, artist interviews, and behind-the-scenes access to one of the world's most historic art studios.",
+      icon: "🏛",
+    },
+  ],
+  larucheTitle: "Born at La Ruche, the Beehive of Paris.",
+  larucheDescription: paragraphsToPortableText([
+    "La Ruche has been home to Chagall, Modigliani, Rivera, and generations of artists since 1902. Beehive for Life carries that legacy into the digital age.",
+  ]),
+  larucheDonationNote:
+    "5% of all membership and course fees are donated to the Fondation La Ruche-Seydoux to help preserve this irreplaceable monument.",
+  newsletterTitle: "Join the hive",
+  newsletterDescription:
+    "Get updates, inspiration, and early access to new courses and events.",
+};
+
+export const FALLBACK_ABOUT_PAGE: AboutPage = {
+  heroEyebrow: "About",
+  heroTitle: "The hive, the founder, the place.",
+  storyEyebrow: "About Beehive for Life",
+  storyTitle: "A community born from a vision over a century old.",
+  storyImage: undefined,
+  storyBody: paragraphsToPortableText([
+    "In 1902, the sculptor Alfred Boucher bought a parcel of land in the south of Paris and built a curious round building from the leftovers of the World’s Fair. He called it La Ruche, the Beehive. His idea was simple and radical: give artists a place to live and work side by side, so that none of them would ever have to make art alone.",
+    "Beehive for Life carries that idea into the digital age. Studios are wonderful, but a working artist’s life is global now. The hive can stretch across oceans. What matters is the same thing Boucher believed in over a hundred years ago: artistic solidarity, generosity, and the conviction that art is more powerful when shared.",
+    "Michèle van de Roer founded Beehive for Life from inside La Ruche itself. The community is the practice. The hive is the studio.",
+  ]),
+  founderEyebrow: "About the founder",
+  founderTitle: "Michèle van de Roer",
+  founderImage: undefined,
+  founderBio: paragraphsToPortableText([
+    "Dutch-born, Paris-based, Michèle van de Roer is a multimedia artist working from La Ruche. Her practice moves between painting, drawing, and printmaking, and her teaching weaves technique together with healing and wellbeing.",
+    "She has held a Fulbright Fellowship. Her work is collected by the Musée Rodin and the Bibliothèque Nationale de France, and held in private collections worldwide. She is represented by Galerie Paul Prouté in Paris and Galerie Mourlot in New York.",
+  ]),
+  founderLinkLabel: "Explore Michèle’s artwork",
+  founderLinkUrl: "https://michelevanderoer.com",
+  larucheEyebrow: "About La Ruche",
+  larucheTitle: "The Beehive of Paris.",
+  larucheBody: paragraphsToPortableText([
+    "For over 120 years La Ruche has sheltered artists. Chagall, Modigliani, Soutine, Brancusi, Léger, Rivera, Zadkine and generations after them passed through its narrow staircase and circular studios. The building still stands. Artists still work there. The light still falls the way it did in 1910.",
+    "Beehive for Life ensures its spirit reaches the world. 5% of every membership and every course goes to the Fondation La Ruche-Seydoux to help preserve the building and the residencies it makes possible.",
+  ]),
+  larucheLinkLabel: "Read the full La Ruche story",
+  larucheLinkUrl: "https://michelevanderoer.com/la-ruche",
+};
+
+export const FALLBACK_TESTIMONIALS: Testimonial[] = [
+  {
+    quote:
+      "A real community. The studio exchange brought me to Lisbon, and a Lisbon painter to my studio in Berlin.",
+    name: "Member testimonial",
+    role: "Worker Bee member",
+    featured: true,
+    order: 1,
+  },
+  {
+    quote:
+      "The course was the most generous teaching I have ever received. Michèle's voice is in the room.",
+    name: "Member testimonial",
+    role: "30 Days of Light graduate",
+    featured: true,
+    order: 2,
+  },
+  {
+    quote:
+      "I joined to support La Ruche. I stayed for the people I met inside the hive.",
+    name: "Member testimonial",
+    role: "Golden Hive patron",
+    featured: true,
+    order: 3,
+  },
+];
+
+const HOMEPAGE_QUERY = `*[_type == "beehiveHomepage"][0]{
+  heroTitle,
+  heroSubtitle,
+  heroDescription,
+  heroImage,
+  heroVideoUrl,
+  whatIsTitle,
+  whatIsDescription,
+  founderQuote,
+  founderImage,
+  founderBio,
+  pillars[]{ title, description, icon },
+  larucheTitle,
+  larucheDescription,
+  larucheDonationNote,
+  newsletterTitle,
+  newsletterDescription
+}`;
+
+const ABOUT_PAGE_QUERY = `*[_type == "beehiveAboutPage"][0]{
+  heroEyebrow,
+  heroTitle,
+  storyEyebrow,
+  storyTitle,
+  storyImage,
+  storyBody,
+  founderEyebrow,
+  founderTitle,
+  founderImage,
+  founderBio,
+  founderLinkLabel,
+  founderLinkUrl,
+  larucheEyebrow,
+  larucheTitle,
+  larucheBody,
+  larucheLinkLabel,
+  larucheLinkUrl
+}`;
+
+const TESTIMONIALS_QUERY = `*[_type == "beehiveTestimonial" && featured == true] | order(order asc, _createdAt asc){
+  quote,
+  name,
+  role,
+  featured,
+  order
+}`;
+
+function isHomepageValid(h: Homepage | null | undefined): h is Homepage {
+  return !!h && !!h.heroTitle;
+}
+
+function isAboutValid(a: AboutPage | null | undefined): a is AboutPage {
+  return !!a && !!a.heroTitle;
+}
+
+export async function getHomepage(): Promise<Homepage> {
+  const result = await sanityFetch<Homepage | null>(HOMEPAGE_QUERY, {}, null);
+  if (isHomepageValid(result)) {
+    return {
+      ...FALLBACK_HOMEPAGE,
+      ...result,
+      pillars:
+        Array.isArray(result.pillars) && result.pillars.length > 0
+          ? result.pillars
+          : FALLBACK_HOMEPAGE.pillars,
+      whatIsDescription:
+        Array.isArray(result.whatIsDescription) &&
+        result.whatIsDescription.length > 0
+          ? result.whatIsDescription
+          : FALLBACK_HOMEPAGE.whatIsDescription,
+      founderBio:
+        Array.isArray(result.founderBio) && result.founderBio.length > 0
+          ? result.founderBio
+          : FALLBACK_HOMEPAGE.founderBio,
+      larucheDescription:
+        Array.isArray(result.larucheDescription) &&
+        result.larucheDescription.length > 0
+          ? result.larucheDescription
+          : FALLBACK_HOMEPAGE.larucheDescription,
+    };
+  }
+  return FALLBACK_HOMEPAGE;
+}
+
+export async function getAboutPage(): Promise<AboutPage> {
+  const result = await sanityFetch<AboutPage | null>(
+    ABOUT_PAGE_QUERY,
+    {},
+    null
+  );
+  if (isAboutValid(result)) {
+    return {
+      ...FALLBACK_ABOUT_PAGE,
+      ...result,
+      storyBody:
+        Array.isArray(result.storyBody) && result.storyBody.length > 0
+          ? result.storyBody
+          : FALLBACK_ABOUT_PAGE.storyBody,
+      founderBio:
+        Array.isArray(result.founderBio) && result.founderBio.length > 0
+          ? result.founderBio
+          : FALLBACK_ABOUT_PAGE.founderBio,
+      larucheBody:
+        Array.isArray(result.larucheBody) && result.larucheBody.length > 0
+          ? result.larucheBody
+          : FALLBACK_ABOUT_PAGE.larucheBody,
+    };
+  }
+  return FALLBACK_ABOUT_PAGE;
+}
+
+export async function getTestimonials(): Promise<Testimonial[]> {
+  const result = await sanityFetch<Testimonial[]>(
+    TESTIMONIALS_QUERY,
+    {},
+    []
+  );
+  if (Array.isArray(result) && result.length > 0) return result;
+  return FALLBACK_TESTIMONIALS;
+}

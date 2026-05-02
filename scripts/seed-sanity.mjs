@@ -422,6 +422,136 @@ function slugify(s) {
     .slice(0, 60);
 }
 
+function block(text, key) {
+  return {
+    _key: `b-${key}`,
+    _type: "block",
+    style: "normal",
+    markDefs: [],
+    children: [{ _key: `s-${key}`, _type: "span", text, marks: [] }],
+  };
+}
+
+function paragraphs(arr) {
+  return arr.map((t, i) => block(t, String(i)));
+}
+
+const HOMEPAGE_DOC = {
+  _id: "beehiveHomepage",
+  _type: "beehiveHomepage",
+  heroTitle: "Beehive for Life",
+  heroSubtitle: "A Creative Community Born at La Ruche",
+  heroDescription:
+    "Join artists and art lovers from around the world. Learn, connect, create.",
+  whatIsTitle:
+    "A community for artists and art lovers, born at La Ruche.",
+  whatIsDescription: paragraphs([
+    "Art is more powerful when shared. Beehive for Life was born from the same spirit that has animated La Ruche for over 120 years, the belief that artists need each other.",
+  ]),
+  founderQuote: "Michèle van de Roer, founder",
+  founderBio: paragraphs([
+    "Michèle van de Roer is a Dutch-born, Paris-based multimedia artist working from La Ruche. Her work is held in the Rodin Museum, the Bibliothèque Nationale de France, and private collections worldwide. She is represented by Galerie Paul Prouté (Paris) and Galerie Mourlot (New York).",
+  ]),
+  pillars: [
+    {
+      _key: "pillar-community",
+      _type: "pillar",
+      title: "Community",
+      description:
+        "Connect with artists worldwide. Studio exchanges, meetups, critique circles, and a global network of creative practitioners.",
+      icon: "🐝",
+    },
+    {
+      _key: "pillar-learn",
+      _type: "pillar",
+      title: "Learn",
+      description:
+        "Courses taught from La Ruche by Michèle van de Roer. Technique meets healing. Art as transformation.",
+      icon: "🎨",
+    },
+    {
+      _key: "pillar-experience",
+      _type: "pillar",
+      title: "Experience",
+      description:
+        "Curated exhibitions, gallery walks, artist interviews, and behind-the-scenes access to one of the world's most historic art studios.",
+      icon: "🏛",
+    },
+  ],
+  larucheTitle: "Born at La Ruche, the Beehive of Paris.",
+  larucheDescription: paragraphs([
+    "La Ruche has been home to Chagall, Modigliani, Rivera, and generations of artists since 1902. Beehive for Life carries that legacy into the digital age.",
+  ]),
+  larucheDonationNote:
+    "5% of all membership and course fees are donated to the Fondation La Ruche-Seydoux to help preserve this irreplaceable monument.",
+  newsletterTitle: "Join the hive",
+  newsletterDescription:
+    "Get updates, inspiration, and early access to new courses and events.",
+};
+
+const ABOUT_PAGE_DOC = {
+  _id: "beehiveAboutPage",
+  _type: "beehiveAboutPage",
+  heroEyebrow: "About",
+  heroTitle: "The hive, the founder, the place.",
+  storyEyebrow: "About Beehive for Life",
+  storyTitle: "A community born from a vision over a century old.",
+  storyBody: paragraphs([
+    "In 1902, the sculptor Alfred Boucher bought a parcel of land in the south of Paris and built a curious round building from the leftovers of the World’s Fair. He called it La Ruche, the Beehive. His idea was simple and radical: give artists a place to live and work side by side, so that none of them would ever have to make art alone.",
+    "Beehive for Life carries that idea into the digital age. Studios are wonderful, but a working artist’s life is global now. The hive can stretch across oceans. What matters is the same thing Boucher believed in over a hundred years ago: artistic solidarity, generosity, and the conviction that art is more powerful when shared.",
+    "Michèle van de Roer founded Beehive for Life from inside La Ruche itself. The community is the practice. The hive is the studio.",
+  ]),
+  founderEyebrow: "About the founder",
+  founderTitle: "Michèle van de Roer",
+  founderBio: paragraphs([
+    "Dutch-born, Paris-based, Michèle van de Roer is a multimedia artist working from La Ruche. Her practice moves between painting, drawing, and printmaking, and her teaching weaves technique together with healing and wellbeing.",
+    "She has held a Fulbright Fellowship. Her work is collected by the Musée Rodin and the Bibliothèque Nationale de France, and held in private collections worldwide. She is represented by Galerie Paul Prouté in Paris and Galerie Mourlot in New York.",
+  ]),
+  founderLinkLabel: "Explore Michèle’s artwork",
+  founderLinkUrl: "https://michelevanderoer.com",
+  larucheEyebrow: "About La Ruche",
+  larucheTitle: "The Beehive of Paris.",
+  larucheBody: paragraphs([
+    "For over 120 years La Ruche has sheltered artists. Chagall, Modigliani, Soutine, Brancusi, Léger, Rivera, Zadkine and generations after them passed through its narrow staircase and circular studios. The building still stands. Artists still work there. The light still falls the way it did in 1910.",
+    "Beehive for Life ensures its spirit reaches the world. 5% of every membership and every course goes to the Fondation La Ruche-Seydoux to help preserve the building and the residencies it makes possible.",
+  ]),
+  larucheLinkLabel: "Read the full La Ruche story",
+  larucheLinkUrl: "https://michelevanderoer.com/la-ruche",
+};
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "A real community. The studio exchange brought me to Lisbon, and a Lisbon painter to my studio in Berlin.",
+    name: "Member testimonial",
+    role: "Worker Bee member",
+  },
+  {
+    quote:
+      "The course was the most generous teaching I have ever received. Michèle's voice is in the room.",
+    name: "Member testimonial",
+    role: "30 Days of Light graduate",
+  },
+  {
+    quote:
+      "I joined to support La Ruche. I stayed for the people I met inside the hive.",
+    name: "Member testimonial",
+    role: "Golden Hive patron",
+  },
+];
+
+function buildTestimonialDocs() {
+  return TESTIMONIALS.map((t, i) => ({
+    _id: `beehiveTestimonial-${slugify(t.role)}-${i + 1}`,
+    _type: "beehiveTestimonial",
+    quote: t.quote,
+    name: t.name,
+    role: t.role,
+    featured: true,
+    order: i + 1,
+  }));
+}
+
 function buildFaqDocs() {
   const docs = [];
   FAQS_GENERAL.forEach(([q, a], i) => {
@@ -452,11 +582,18 @@ async function run() {
     `Seeding Sanity dataset "${dataset}" (project ${projectId})...`
   );
 
+  // Use createIfNotExists everywhere so re-running the seed never overwrites
+  // edits the artist has made in Studio (e.g. heroImage, introVideoUrl).
   const tx = client.transaction();
-  tx.createOrReplace(COURSE_30_DAYS);
-  tx.createOrReplace(MEMBERSHIP_DOC);
+  tx.createIfNotExists(HOMEPAGE_DOC);
+  tx.createIfNotExists(ABOUT_PAGE_DOC);
+  tx.createIfNotExists(COURSE_30_DAYS);
+  tx.createIfNotExists(MEMBERSHIP_DOC);
+  for (const doc of buildTestimonialDocs()) {
+    tx.createIfNotExists(doc);
+  }
   for (const doc of buildFaqDocs()) {
-    tx.createOrReplace(doc);
+    tx.createIfNotExists(doc);
   }
 
   const res = await tx.commit();
