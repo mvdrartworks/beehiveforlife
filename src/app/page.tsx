@@ -17,6 +17,13 @@ import { urlFor } from "@/lib/sanity";
 
 export const revalidate = 60;
 
+// On mobile the hero copy is taller than a 16/10 box, so a fixed aspect ratio
+// clipped the headline. Below md the content sets the height (min-height is
+// just a floor); from md up the cinematic 21/9 ratio takes over, where the
+// copy fits comfortably.
+const HERO_RATIO = "min-h-[34rem] md:min-h-0 md:aspect-[21/9]";
+const HERO_FRAME = `relative ${HERO_RATIO} w-full overflow-hidden`;
+
 export default async function HomePage() {
   const [homepage, membership, featuredCourse, testimonials] =
     await Promise.all([
@@ -33,17 +40,17 @@ export default async function HomePage() {
       <section className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 bg-warm-radial" />
         {homepage.heroVideoUrl ? (
-          <div className="relative aspect-[16/10] md:aspect-[21/9] w-full overflow-hidden">
+          <div className={HERO_FRAME}>
             <VideoEmbed
               url={homepage.heroVideoUrl}
               title={`${homepage.heroTitle} – hero`}
               className="!rounded-none !shadow-none absolute inset-0 h-full"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/45 via-deep/50 to-deep/60 md:from-deep/10 md:via-deep/30 md:to-deep/55 pointer-events-none" />
             <HeroOverlay homepage={homepage} />
           </div>
         ) : homepage.heroImage?.asset ? (
-          <div className="relative aspect-[16/10] md:aspect-[21/9] w-full overflow-hidden">
+          <div className={HERO_FRAME}>
             <Image
               src={urlFor(homepage.heroImage).width(2400).url()}
               alt={homepage.heroImage.alt || homepage.heroTitle}
@@ -52,15 +59,15 @@ export default async function HomePage() {
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/45 via-deep/50 to-deep/60 md:from-deep/10 md:via-deep/30 md:to-deep/55" />
             <HeroOverlay homepage={homepage} />
           </div>
         ) : (
           <Placeholder
-            ratio="aspect-[16/10] md:aspect-[21/9]"
+            ratio={HERO_RATIO}
             className="rounded-none"
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-deep/10 via-deep/30 to-deep/55" />
+            <div className="absolute inset-0 bg-gradient-to-b from-deep/45 via-deep/50 to-deep/60 md:from-deep/10 md:via-deep/30 md:to-deep/55" />
             <HeroOverlay homepage={homepage} />
           </Placeholder>
         )}
@@ -466,8 +473,10 @@ function HeroOverlay({
   homepage: { heroTitle: string; heroSubtitle: string; heroDescription: string };
 }) {
   return (
-    <div className="absolute inset-0 flex items-end md:items-center pointer-events-none">
-      <div className="mx-auto max-w-7xl w-full px-6 lg:px-10 pb-12 md:pb-0 text-cream pointer-events-auto">
+    // Relative below md so the copy drives the hero's height instead of being
+    // clipped by it; absolute from md up, where it overlays the image.
+    <div className="relative md:absolute md:inset-0 flex items-end md:items-center pointer-events-none">
+      <div className="mx-auto max-w-7xl w-full px-6 lg:px-10 py-14 md:py-0 text-cream pointer-events-auto">
         <Reveal>
           <p className="font-sans text-sm md:text-base wordmark text-honey">
             Born at La Ruche, Paris
