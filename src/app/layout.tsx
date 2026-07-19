@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Nunito } from "next/font/google";
 import "./globals.css";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
@@ -40,6 +41,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Keep banner edits in Studio reaching every page, including the otherwise
+// fully static ones, without a redeploy.
+export const revalidate = 60;
+
 export default function RootLayout({
   children,
 }: {
@@ -49,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={rootClass}>
       <body className="font-sans bg-ivory text-charcoal antialiased">
+        <AnnouncementBanner />
         <Nav />
         <main className="min-h-screen">{children}</main>
         <Footer />

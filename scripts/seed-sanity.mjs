@@ -436,6 +436,14 @@ function paragraphs(arr) {
   return arr.map((t, i) => block(t, String(i)));
 }
 
+const SITE_SETTINGS_DOC = {
+  _id: "beehiveSiteSettings",
+  _type: "beehiveSiteSettings",
+  bannerEnabled: true,
+  bannerText:
+    "Courses and memberships open 15 September 2026. Join the newsletter to be first to know.",
+};
+
 const HOMEPAGE_DOC = {
   _id: "beehiveHomepage",
   _type: "beehiveHomepage",
@@ -585,6 +593,7 @@ async function run() {
   // Use createIfNotExists everywhere so re-running the seed never overwrites
   // edits the artist has made in Studio (e.g. heroImage, introVideoUrl).
   const tx = client.transaction();
+  tx.createIfNotExists(SITE_SETTINGS_DOC);
   tx.createIfNotExists(HOMEPAGE_DOC);
   tx.createIfNotExists(ABOUT_PAGE_DOC);
   tx.createIfNotExists(COURSE_30_DAYS);

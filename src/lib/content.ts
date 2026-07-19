@@ -679,6 +679,49 @@ export const FALLBACK_TESTIMONIALS: Testimonial[] = [
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Site settings (announcement banner)
+// ---------------------------------------------------------------------------
+
+export type SiteSettings = {
+  bannerEnabled: boolean;
+  bannerText: string;
+  bannerLinkText?: string;
+  bannerLinkUrl?: string;
+};
+
+export const FALLBACK_SITE_SETTINGS: SiteSettings = {
+  bannerEnabled: true,
+  bannerText:
+    "Courses and memberships open 15 September 2026. Join the newsletter to be first to know.",
+  bannerLinkText: undefined,
+  bannerLinkUrl: undefined,
+};
+
+const SITE_SETTINGS_QUERY = `*[_type == "beehiveSiteSettings"][0]{
+  bannerEnabled,
+  bannerText,
+  bannerLinkText,
+  bannerLinkUrl
+}`;
+
+export async function getSiteSettings(): Promise<SiteSettings> {
+  const result = await sanityFetch<Partial<SiteSettings> | null>(
+    SITE_SETTINGS_QUERY,
+    {},
+    null
+  );
+  // No document yet (schema not deployed) -> fall back. Once the document
+  // exists, an explicit `false` must win, so only default when undefined.
+  if (!result) return FALLBACK_SITE_SETTINGS;
+  return {
+    bannerEnabled: result.bannerEnabled ?? FALLBACK_SITE_SETTINGS.bannerEnabled,
+    bannerText: result.bannerText ?? FALLBACK_SITE_SETTINGS.bannerText,
+    bannerLinkText: result.bannerLinkText,
+    bannerLinkUrl: result.bannerLinkUrl,
+  };
+}
+
 const HOMEPAGE_QUERY = `*[_type == "beehiveHomepage"][0]{
   heroTitle,
   heroSubtitle,
