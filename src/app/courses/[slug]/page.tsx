@@ -1,25 +1,64 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { notFound } from "next/navigation";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
 import VideoEmbed from "@/components/VideoEmbed";
-import { getCourse } from "@/lib/content";
+import { getCourse, getCourseSlugs, type Course } from "@/lib/content";
 import { urlFor } from "@/lib/sanity";
 
-export const metadata: Metadata = {
-  title: "30 Days of Light",
-  description:
-    "A Healing Painting Journey from La Ruche, Paris. Six weeks, three modules, taught by Michèle van de Roer.",
-};
+type Params = { params: { slug: string } };
 
 // Re-fetch from Sanity at most once per minute so artist edits in Studio
 // show up without a redeploy.
 export const revalidate = 60;
 
-export default async function ThirtyDaysOfLightPage() {
-  const course = await getCourse("30-days-of-light");
+// Courses added in Studio after a deploy still render, on demand.
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const courses = await getCourseSlugs();
+  return courses.map((c) => ({ slug: c.slug }));
+}
+
+// getCourse throws for a slug with no document and no fallback; a request for
+// an unknown course should be a 404, not a 500.
+async function findCourse(slug: string): Promise<Course | null> {
+  try {
+    return await getCourse(slug);
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
+  const course = await findCourse(params.slug);
+  if (!course) return { title: "Course not found" };
+
+  return {
+    title: course.title,
+    description: [course.subtitle, course.tagline].filter(Boolean).join(" "),
+    openGraph: {
+      title: course.title,
+      description: course.subtitle,
+      type: "article",
+      images: course.heroImage?.asset
+        ? [urlFor(course.heroImage).width(1200).height(630).url()]
+        : undefined,
+    },
+  };
+}
+
+export default async function CoursePage({ params }: Params) {
+  const course = await findCourse(params.slug);
+  if (!course) notFound();
+
+  // Enrollment is handled by email until Stripe checkout is connected.
+  const enrollHref = `mailto:${course.contactEmail}?subject=${encodeURIComponent(
+    `Enrollment enquiry: ${course.title}`
+  )}`;
 
   return (
     <>
@@ -46,7 +85,7 @@ export default async function ThirtyDaysOfLightPage() {
             </Reveal>
             <Reveal delay={0.4}>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <ButtonLink href={`/courses/${course.slug}/enroll`}>
+                <ButtonLink href={enrollHref}>
                   Enroll now
                 </ButtonLink>
                 <ButtonLink href="#format" variant="secondary">
@@ -308,7 +347,7 @@ export default async function ThirtyDaysOfLightPage() {
           </Reveal>
           <Reveal delay={0.2}>
             <div className="mt-8 flex justify-center">
-              <ButtonLink href={`/courses/${course.slug}/enroll`}>
+              <ButtonLink href={enrollHref}>
                 Enroll now
               </ButtonLink>
             </div>

@@ -398,6 +398,11 @@ const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] |
   contactEmail
 }`;
 
+const COURSE_SLUGS_QUERY = `*[_type == "beehiveCourse" && defined(slug.current)] | order(order asc, _createdAt asc){
+  "slug": slug.current,
+  _updatedAt
+}`;
+
 const MEMBERSHIP_QUERY = `*[_type == "beehiveMembership"][0]{
   "tiers": tiers[]{
     slug,
@@ -440,6 +445,16 @@ export async function getCourse(slug: string): Promise<Course> {
   if (isCourseValid(result)) return result;
   if (fallback) return fallback;
   throw new Error(`No course content for slug: ${slug}`);
+}
+
+export type CourseRef = { slug: string; _updatedAt?: string };
+
+export async function getCourseSlugs(): Promise<CourseRef[]> {
+  const result = await sanityFetch<CourseRef[]>(COURSE_SLUGS_QUERY, {}, []);
+  if (Array.isArray(result) && result.length > 0) {
+    return result.filter((c) => !!c?.slug);
+  }
+  return [{ slug: FALLBACK_COURSE_30_DAYS.slug }];
 }
 
 export async function getFeaturedCourse(): Promise<Course> {
