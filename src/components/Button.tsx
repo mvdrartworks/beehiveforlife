@@ -29,6 +29,14 @@ export function ButtonLink({
   className?: string;
 }) {
   const cls = `${base} ${styles[variant]} ${className}`;
+  // mailto:/tel: are handed to the OS, not routed — a new tab would be left behind.
+  if (/^(mailto:|tel:)/.test(href)) {
+    return (
+      <a href={href} className={cls}>
+        {children}
+      </a>
+    );
+  }
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>

@@ -432,7 +432,7 @@ export default async function HomePage() {
       </Section>
 
       {/* Newsletter */}
-      <Section bg="warm">
+      <Section bg="warm" id="newsletter">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
             <p className="wordmark text-xs text-terracotta">Newsletter</p>

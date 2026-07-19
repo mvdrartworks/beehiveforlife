@@ -91,7 +91,11 @@ export default async function MembershipPage() {
                 </p>
 
                 <div className="mt-8">
-                  <ButtonLink href={`/membership/checkout?tier=${t.slug}`}>
+                  <ButtonLink
+                    href={`mailto:hello@beehiveforlife.com?subject=${encodeURIComponent(
+                      `Membership enquiry: ${t.name}`
+                    )}`}
+                  >
                     Join now
                   </ButtonLink>
                 </div>
