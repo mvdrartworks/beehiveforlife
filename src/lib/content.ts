@@ -78,7 +78,7 @@ export const FALLBACK_COURSE_30_DAYS: Course = {
   originalPrice: 597,
   currency: "EUR",
   memberDiscountSummary:
-    "Seedling 10% · Worker Bee 15% · Queen’s Court included · Golden Hive included",
+    "Seedling 10% · Worker Bee 15%",
   modules: [
     {
       title: "Working from Love",
@@ -185,8 +185,6 @@ export const FALLBACK_COURSE_30_DAYS: Course = {
   memberDiscounts: [
     { tier: "Seedling", value: "10% off (€402)" },
     { tier: "Worker Bee", value: "15% off (€380)" },
-    { tier: "Queen's Court", value: "Included at no extra charge" },
-    { tier: "Golden Hive", value: "Included permanently" },
   ],
   privateSessionsPrice: 150,
   privateSessionsDescription:

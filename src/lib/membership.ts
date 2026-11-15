@@ -45,39 +45,4 @@ export const MEMBERSHIP_TIERS: MembershipTier[] = [
     perfectFor: "Active artists, travelers, people building their practice",
     highlight: true,
   },
-  {
-    slug: "queens-court",
-    name: "Queen's Court",
-    emoji: "👑",
-    monthlyPrice: 89,
-    annualPrice: 890,
-    tagline: "Full access, personal mentoring",
-    features: [
-      "Everything in Worker Bee",
-      "Monthly group mentoring session with Michèle",
-      "VIP artist interviews and behind-the-scenes content",
-      "One course included per year (e.g. 30 Days of Light)",
-      "Priority access to events and workshops",
-    ],
-    perfectFor:
-      "Serious artists, professionals, collectors who want depth",
-  },
-  {
-    slug: "golden-hive",
-    name: "Golden Hive",
-    emoji: "✨",
-    monthlyPrice: 195,
-    annualPrice: 1950,
-    tagline: "The ultimate creative partnership",
-    features: [
-      "Everything in Queen's Court",
-      "Private 1-on-1 sessions with Michèle (2x per year, 30 min each)",
-      "Two courses included per year",
-      "Name listed as patron supporter",
-      "Early access to all new content",
-      "Direct communication channel with Michèle",
-    ],
-    perfectFor:
-      "Dedicated patrons, art collectors, those who want the closest relationship",
-  },
 ];

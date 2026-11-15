@@ -234,7 +234,7 @@ export default async function HomePage() {
           </Reveal>
         </div>
 
-        <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-12 grid sm:grid-cols-2 gap-5 max-w-4xl">
           {tiers.map((t, i) => (
             <Reveal key={t.slug} delay={i * 0.08}>
               <Link

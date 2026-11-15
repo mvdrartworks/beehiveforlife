@@ -295,6 +295,10 @@ export default async function CoursePage({ params }: Params) {
                   </li>
                 ))}
               </ul>
+              <p className="mt-4 text-sm text-charcoal-muted leading-relaxed">
+                The course is a separate purchase and is not included in any
+                membership. Members receive the discounts above.
+              </p>
             </div>
           </Reveal>
         </div>

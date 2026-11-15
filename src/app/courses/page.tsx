@@ -108,7 +108,7 @@ export default async function CoursesPage() {
                   <dt className="wordmark text-[0.7rem] text-charcoal-muted">
                     Member discount
                   </dt>
-                  <dd className="mt-1 text-charcoal">Up to 100% off</dd>
+                  <dd className="mt-1 text-charcoal">Up to 15% off</dd>
                 </div>
               </dl>
 

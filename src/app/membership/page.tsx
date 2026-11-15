@@ -7,7 +7,7 @@ import { getMembership, getFaqs } from "@/lib/content";
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "Choose the Beehive for Life membership that fits your creative journey. Four tiers from Seedling to Golden Hive.",
+    "Choose the Beehive for Life membership that fits your creative journey. Two tiers: Seedling and Worker Bee.",
 };
 
 export const revalidate = 60;
