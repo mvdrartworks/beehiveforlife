@@ -302,7 +302,7 @@ const FAQS_GENERAL = [
   ],
   [
     "What do I get with my membership?",
-    "It depends on your tier. All tiers include the newsletter and community access. Higher tiers include studio exchanges, mentoring with Michèle, included courses, and patron benefits.",
+    "All memberships include the monthly newsletter, the community discussion forums, curated exhibition and museum recommendations, and a discount on courses. Seedling is your entry into the hive, with a 10% course discount; Worker Bee adds the global studio exchange network, local meetups, member exhibitions curated by Michèle, material guides, and a 15% course discount.",
   ],
   [
     "How do the courses work?",
@@ -322,7 +322,7 @@ const FAQS_GENERAL = [
   ],
   [
     "Can I visit La Ruche?",
-    "La Ruche is a working artist compound and is not open to general public visits. Members at the Queen's Court and Golden Hive tiers receive priority access to occasional studio events and private visits, when scheduling permits.",
+    "La Ruche is a private working studio, but members are kept informed of occasional events, open studios, and opportunities to connect in person. Worker Bee members receive priority notice of these.",
   ],
   [
     "How do I contact support?",
@@ -349,7 +349,7 @@ const FAQS_MEMBERSHIP = [
   ],
   [
     "Is this a course platform?",
-    "Beehive for Life is a community first. Courses are available separately or included in higher tiers.",
+    "Beehive for Life is a community first. Courses, such as 30 Days of Light, are available as separate purchases, with a member discount (10% for Seedling, 15% for Worker Bee).",
   ],
   [
     "Do I need to be an artist?",
@@ -491,7 +491,7 @@ const TESTIMONIALS = [
     quote:
       "I joined to support La Ruche. I stayed for the people I met inside the hive.",
     name: "Member testimonial",
-    role: "Golden Hive patron",
+    role: "Worker Bee member",
   },
 ];
 

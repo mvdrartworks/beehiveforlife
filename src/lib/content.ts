@@ -224,7 +224,7 @@ export const FALLBACK_FAQ_GENERAL: Faq[] = [
   {
     question: "What do I get with my membership?",
     answer:
-      "It depends on your tier. All tiers include the newsletter and community access. Higher tiers include studio exchanges, mentoring with Michèle, included courses, and patron benefits.",
+      "All memberships include the monthly newsletter, the community discussion forums, curated exhibition and museum recommendations, and a discount on courses. Seedling is your entry into the hive, with a 10% course discount; Worker Bee adds the global studio exchange network, local meetups, member exhibitions curated by Michèle, material guides, and a 15% course discount.",
     category: "general",
     order: 4,
   },
@@ -259,7 +259,7 @@ export const FALLBACK_FAQ_GENERAL: Faq[] = [
   {
     question: "Can I visit La Ruche?",
     answer:
-      "La Ruche is a working artist compound and is not open to general public visits. Members at the Queen's Court and Golden Hive tiers receive priority access to occasional studio events and private visits, when scheduling permits.",
+      "La Ruche is a private working studio, but members are kept informed of occasional events, open studios, and opportunities to connect in person. Worker Bee members receive priority notice of these.",
     category: "general",
     order: 9,
   },
@@ -304,7 +304,7 @@ export const FALLBACK_FAQ_MEMBERSHIP: Faq[] = [
   {
     question: "Is this a course platform?",
     answer:
-      "Beehive for Life is a community first. Courses are available separately or included in higher tiers.",
+      "Beehive for Life is a community first. Courses, such as 30 Days of Light, are available as separate purchases, with a member discount (10% for Seedling, 15% for Worker Bee).",
     category: "membership",
     order: 3,
   },
@@ -671,7 +671,7 @@ export const FALLBACK_TESTIMONIALS: Testimonial[] = [
     quote:
       "I joined to support La Ruche. I stayed for the people I met inside the hive.",
     name: "Member testimonial",
-    role: "Golden Hive patron",
+    role: "Worker Bee member",
     featured: true,
     order: 3,
   },
