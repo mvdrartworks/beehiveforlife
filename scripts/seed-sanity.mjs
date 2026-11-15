@@ -322,7 +322,7 @@ const FAQS_GENERAL = [
   ],
   [
     "Can I visit La Ruche?",
-    "La Ruche is a private working studio, but members are kept informed of occasional events, open studios, and opportunities to connect in person. Worker Bee members receive priority notice of these.",
+    "La Ruche is a private working studio, but members are kept informed of occasional events, open studios, and opportunities to connect in person, including local meetups.",
   ],
   [
     "How do I contact support?",
@@ -491,7 +491,7 @@ const TESTIMONIALS = [
     quote:
       "I joined to support La Ruche. I stayed for the people I met inside the hive.",
     name: "Member testimonial",
-    role: "Worker Bee member",
+    role: "Seedling member",
   },
 ];
 
