@@ -32,6 +32,7 @@ export type CourseDiscount = {
 
 export type Course = {
   slug: string;
+  featured?: boolean;
   title: string;
   subtitle: string;
   tagline: string;
@@ -324,8 +325,9 @@ export const FALLBACK_FAQ_MEMBERSHIP: Faq[] = [
   },
 ];
 
-const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]{
+const COURSE_PROJECTION = `{
   "slug": slug.current,
+  featured,
   title,
   subtitle,
   tagline,
@@ -360,41 +362,14 @@ const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]{
   contactEmail
 }`;
 
-const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] | order(order asc, _createdAt asc)[0]{
-  "slug": slug.current,
-  title,
-  subtitle,
-  tagline,
-  heroImage,
-  introVideoUrl,
-  description,
-  duration,
-  format,
-  foundingPrice,
-  originalPrice,
-  currency,
-  memberDiscountSummary,
-  modules[]{
-    title,
-    description,
-    order,
-    lessons[]{
-      title,
-      description,
-      videoUrl,
-      duration,
-      order,
-      isFree
-    }
-  },
-  formatDetails,
-  memberDiscounts,
-  privateSessionsPrice,
-  privateSessionsDescription,
-  laRucheNote,
-  enrollFootnote,
-  contactEmail
-}`;
+const COURSE_QUERY = `*[_type == "beehiveCourse" && slug.current == $slug][0]${COURSE_PROJECTION}`;
+
+const FEATURED_COURSE_QUERY = `*[_type == "beehiveCourse" && featured == true] | order(order asc, _createdAt asc)[0]${COURSE_PROJECTION}`;
+
+// Every published course, fetched at request/revalidation time. Deliberately
+// not filtered on `featured` (or any other flag) so a newly published course
+// shows up on /courses without extra setup in Studio.
+const ALL_COURSES_QUERY = `*[_type == "beehiveCourse" && defined(slug.current)] | order(featured desc, order asc, _createdAt asc)${COURSE_PROJECTION}`;
 
 const COURSE_SLUGS_QUERY = `*[_type == "beehiveCourse" && defined(slug.current)] | order(order asc, _createdAt asc){
   "slug": slug.current,
@@ -426,6 +401,20 @@ function isCourseValid(c: Course | null | undefined): c is Course {
   return !!c && !!c.title && Array.isArray(c.modules) && c.modules.length > 0;
 }
 
+const DEFAULT_CONTACT_EMAIL = "hello@beehiveforlife.com";
+
+// Optional list/text fields may be left empty in Studio on a new course; fill
+// them with safe defaults so the pages never call .map on null.
+function normalizeCourse(c: Course): Course {
+  return {
+    ...c,
+    modules: (c.modules ?? []).map((m) => ({ ...m, lessons: m.lessons ?? [] })),
+    formatDetails: c.formatDetails ?? [],
+    memberDiscounts: c.memberDiscounts ?? [],
+    contactEmail: c.contactEmail || DEFAULT_CONTACT_EMAIL,
+  };
+}
+
 function isMembershipValid(
   m: Membership | null | undefined
 ): m is Membership {
@@ -440,7 +429,7 @@ export async function getCourse(slug: string): Promise<Course> {
     { slug },
     null
   );
-  if (isCourseValid(result)) return result;
+  if (isCourseValid(result)) return normalizeCourse(result);
   if (fallback) return fallback;
   throw new Error(`No course content for slug: ${slug}`);
 }
@@ -461,8 +450,16 @@ export async function getFeaturedCourse(): Promise<Course> {
     {},
     null
   );
-  if (isCourseValid(result)) return result;
+  if (isCourseValid(result)) return normalizeCourse(result);
   return FALLBACK_COURSE_30_DAYS;
+}
+
+export async function getCourses(): Promise<Course[]> {
+  const result = await sanityFetch<Course[]>(ALL_COURSES_QUERY, {}, []);
+  const courses = Array.isArray(result)
+    ? result.filter((c) => !!c?.slug && !!c.title).map(normalizeCourse)
+    : [];
+  return courses.length > 0 ? courses : [FALLBACK_COURSE_30_DAYS];
 }
 
 export async function getMembership(): Promise<Membership> {

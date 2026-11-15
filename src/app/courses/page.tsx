@@ -6,7 +6,7 @@ import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
 import Placeholder from "@/components/Placeholder";
 import VideoEmbed from "@/components/VideoEmbed";
-import { getFeaturedCourse } from "@/lib/content";
+import { getCourses } from "@/lib/content";
 import { urlFor } from "@/lib/sanity";
 
 export const metadata: Metadata = {
@@ -18,9 +18,7 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function CoursesPage() {
-  const course = await getFeaturedCourse();
-  const priceDisplay = `€${course.foundingPrice}`;
-  const originalDisplay = `€${course.originalPrice}`;
+  const courses = await getCourses();
 
   return (
     <>
@@ -43,87 +41,91 @@ export default async function CoursesPage() {
       </Section>
 
       <Section bg="ivory">
-        <Reveal>
-          <article className="grid md:grid-cols-2 gap-10 bg-card rounded-2xl border border-honey/15 shadow-card overflow-hidden">
-            {course.heroImage?.asset ? (
-              <div className="relative aspect-[4/3] md:aspect-auto md:h-full w-full overflow-hidden">
-                <Image
-                  src={urlFor(course.heroImage).width(1600).url()}
-                  alt={course.heroImage.alt || course.title}
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            ) : course.introVideoUrl ? (
-              <VideoEmbed
-                url={course.introVideoUrl}
-                title={`${course.title} – intro video`}
-                className="rounded-none md:h-full"
-              />
-            ) : (
-              <Placeholder
-                ratio="aspect-[4/3] md:aspect-auto"
-                label={course.title}
-                className="rounded-none md:h-full"
-              />
-            )}
-            <div className="p-8 md:p-12 flex flex-col justify-center">
-              <p className="wordmark text-xs text-terracotta">
-                Featured course
-              </p>
-              <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
-                {course.title}
-              </h2>
-              <p className="mt-3 font-serif font-semibold text-xl text-honey">
-                {course.subtitle}
-              </p>
+        <div className="space-y-12">
+          {courses.map((course, i) => (
+            <Reveal key={course.slug} delay={i * 0.08}>
+              <article className="grid md:grid-cols-2 gap-10 bg-card rounded-2xl border border-honey/15 shadow-card overflow-hidden">
+                {course.heroImage?.asset ? (
+                  <div className="relative aspect-[4/3] md:aspect-auto md:h-full w-full overflow-hidden">
+                    <Image
+                      src={urlFor(course.heroImage).width(1600).url()}
+                      alt={course.heroImage.alt || course.title}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                      priority={i === 0}
+                    />
+                  </div>
+                ) : course.introVideoUrl ? (
+                  <VideoEmbed
+                    url={course.introVideoUrl}
+                    title={`${course.title} – intro video`}
+                    className="rounded-none md:h-full"
+                  />
+                ) : (
+                  <Placeholder
+                    ratio="aspect-[4/3] md:aspect-auto"
+                    label={course.title}
+                    className="rounded-none md:h-full"
+                  />
+                )}
+                <div className="p-8 md:p-12 flex flex-col justify-center">
+                  <p className="wordmark text-xs text-terracotta">
+                    {course.featured ? "Featured course" : "Course"}
+                  </p>
+                  <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
+                    {course.title}
+                  </h2>
+                  <p className="mt-3 font-serif font-semibold text-xl text-honey">
+                    {course.subtitle}
+                  </p>
 
-              <dl className="mt-8 grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <dt className="wordmark text-[0.7rem] text-charcoal-muted">
-                    Duration
-                  </dt>
-                  <dd className="mt-1 text-charcoal">{course.duration}</dd>
-                </div>
-                <div>
-                  <dt className="wordmark text-[0.7rem] text-charcoal-muted">
-                    Format
-                  </dt>
-                  <dd className="mt-1 text-charcoal">{course.format}</dd>
-                </div>
-                <div>
-                  <dt className="wordmark text-[0.7rem] text-charcoal-muted">
-                    Founding price
-                  </dt>
-                  <dd className="mt-1 text-charcoal">
-                    {priceDisplay}{" "}
-                    <span className="text-charcoal-muted line-through">
-                      {originalDisplay}
-                    </span>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="wordmark text-[0.7rem] text-charcoal-muted">
-                    Member discount
-                  </dt>
-                  <dd className="mt-1 text-charcoal">Up to 15% off</dd>
-                </div>
-              </dl>
+                  <dl className="mt-8 grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <dt className="wordmark text-[0.7rem] text-charcoal-muted">
+                        Duration
+                      </dt>
+                      <dd className="mt-1 text-charcoal">{course.duration}</dd>
+                    </div>
+                    <div>
+                      <dt className="wordmark text-[0.7rem] text-charcoal-muted">
+                        Format
+                      </dt>
+                      <dd className="mt-1 text-charcoal">{course.format}</dd>
+                    </div>
+                    <div>
+                      <dt className="wordmark text-[0.7rem] text-charcoal-muted">
+                        Founding price
+                      </dt>
+                      <dd className="mt-1 text-charcoal">
+                        €{course.foundingPrice}{" "}
+                        <span className="text-charcoal-muted line-through">
+                          €{course.originalPrice}
+                        </span>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="wordmark text-[0.7rem] text-charcoal-muted">
+                        Member discount
+                      </dt>
+                      <dd className="mt-1 text-charcoal">Up to 15% off</dd>
+                    </div>
+                  </dl>
 
-              <div className="mt-6 text-sm text-charcoal-muted leading-relaxed">
-                <p>{course.memberDiscountSummary}</p>
-              </div>
+                  <div className="mt-6 text-sm text-charcoal-muted leading-relaxed">
+                    <p>{course.memberDiscountSummary}</p>
+                  </div>
 
-              <div className="mt-8">
-                <ButtonLink href={`/courses/${course.slug}`}>
-                  View course details →
-                </ButtonLink>
-              </div>
-            </div>
-          </article>
-        </Reveal>
+                  <div className="mt-8">
+                    <ButtonLink href={`/courses/${course.slug}`}>
+                      View course details →
+                    </ButtonLink>
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </Section>
 
       <Section bg="cream">
