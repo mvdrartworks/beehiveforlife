@@ -394,30 +394,34 @@ export default async function HomePage() {
 
       {/* Testimonials */}
       <Section bg="cream">
-        <Reveal>
-          <p className="wordmark text-xs text-terracotta text-center">
-            Voices from the Hive
-          </p>
-        </Reveal>
-        <Reveal delay={0.1}>
-          <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep text-center">
-            What our members say
-          </h2>
-        </Reveal>
-
-        <div className="mt-14 grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <Reveal key={`${t.name}-${i}`} delay={i * 0.1}>
-              <article className="bg-card rounded-2xl p-8 h-full border border-honey/15 shadow-card">
-                <p className="font-serif text-xl text-charcoal leading-relaxed italic">
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <p className="mt-6 text-sm text-deep font-medium">{t.name}</p>
-                <p className="text-xs text-charcoal-muted">{t.role}</p>
-              </article>
+        {testimonials.length > 0 && (
+          <>
+            <Reveal>
+              <p className="wordmark text-xs text-terracotta text-center">
+                Voices from the Hive
+              </p>
             </Reveal>
-          ))}
-        </div>
+            <Reveal delay={0.1}>
+              <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep text-center">
+                What our members say
+              </h2>
+            </Reveal>
+
+            <div className="mt-14 grid md:grid-cols-3 gap-6">
+              {testimonials.map((t, i) => (
+                <Reveal key={`${t.name}-${i}`} delay={i * 0.1}>
+                  <article className="bg-card rounded-2xl p-8 h-full border border-honey/15 shadow-card">
+                    <p className="font-serif text-xl text-charcoal leading-relaxed italic">
+                      &ldquo;{t.quote}&rdquo;
+                    </p>
+                    <p className="mt-6 text-sm text-deep font-medium">{t.name}</p>
+                    <p className="text-xs text-charcoal-muted">{t.role}</p>
+                  </article>
+                </Reveal>
+              ))}
+            </div>
+          </>
+        )}
 
         <Reveal delay={0.4}>
           <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">

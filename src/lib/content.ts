@@ -647,33 +647,6 @@ export const FALLBACK_ABOUT_PAGE: AboutPage = {
   larucheLinkUrl: "https://michelevanderoer.com/la-ruche",
 };
 
-export const FALLBACK_TESTIMONIALS: Testimonial[] = [
-  {
-    quote:
-      "A real community. The studio exchange brought me to Lisbon, and a Lisbon painter to my studio in Berlin.",
-    name: "Member testimonial",
-    role: "Worker Bee member",
-    featured: true,
-    order: 1,
-  },
-  {
-    quote:
-      "The course was the most generous teaching I have ever received. Michèle's voice is in the room.",
-    name: "Member testimonial",
-    role: "30 Days of Light graduate",
-    featured: true,
-    order: 2,
-  },
-  {
-    quote:
-      "I joined to support La Ruche. I stayed for the people I met inside the hive.",
-    name: "Member testimonial",
-    role: "Seedling member",
-    featured: true,
-    order: 3,
-  },
-];
-
 // ---------------------------------------------------------------------------
 // Site settings (announcement banner)
 // ---------------------------------------------------------------------------
@@ -830,12 +803,8 @@ export async function getAboutPage(): Promise<AboutPage> {
   return FALLBACK_ABOUT_PAGE;
 }
 
+// Only real testimonials from Sanity; none means the block is hidden.
 export async function getTestimonials(): Promise<Testimonial[]> {
-  const result = await sanityFetch<Testimonial[]>(
-    TESTIMONIALS_QUERY,
-    {},
-    []
-  );
-  if (Array.isArray(result) && result.length > 0) return result;
-  return FALLBACK_TESTIMONIALS;
+  const result = await sanityFetch<Testimonial[]>(TESTIMONIALS_QUERY, {}, []);
+  return Array.isArray(result) ? result : [];
 }
