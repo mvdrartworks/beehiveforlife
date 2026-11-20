@@ -424,12 +424,11 @@ export default async function HomePage() {
         )}
 
         <Reveal delay={0.4}>
-          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div className="mt-14 grid grid-cols-2 md:grid-cols-3 gap-6 text-center">
             {[
               { stat: "—", label: "Members worldwide" },
               { stat: "—", label: "Countries" },
               { stat: "120+", label: "Years of La Ruche" },
-              { stat: "5%", label: "Donated to La Ruche" },
             ].map((s) => (
               <div key={s.label}>
                 <p className="font-serif text-4xl text-terracotta">{s.stat}</p>

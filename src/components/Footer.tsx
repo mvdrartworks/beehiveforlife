@@ -68,7 +68,6 @@ export default function Footer() {
             <Link href="/terms" className="hover:text-terracotta">Terms</Link>
             <Link href="/faq" className="hover:text-terracotta">FAQ</Link>
           </div>
-          <p>5% of all revenue supports the Fondation La Ruche-Seydoux.</p>
         </div>
       </div>
     </footer>

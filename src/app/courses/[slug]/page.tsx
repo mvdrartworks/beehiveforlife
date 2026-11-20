@@ -304,40 +304,22 @@ export default async function CoursePage({ params }: Params) {
         </div>
       </Section>
 
-      <Section bg="ivory">
-        <div className="max-w-3xl">
-          <Reveal>
-            <p className="wordmark text-xs text-terracotta">
-              Private sessions
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep leading-tight">
-              Want more personal guidance?
-            </h2>
-          </Reveal>
-          <Reveal delay={0.2}>
-            <p className="mt-6 text-lg text-charcoal leading-relaxed">
-              {course.privateSessionsDescription}
-            </p>
-          </Reveal>
-        </div>
-      </Section>
-
-      <Section bg="warm">
-        <div className="max-w-3xl">
-          <Reveal>
-            <p className="wordmark text-xs text-terracotta">
-              The La Ruche difference
-            </p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <p className="mt-4 font-serif text-3xl md:text-4xl text-deep leading-tight">
-              {course.laRucheNote}
-            </p>
-          </Reveal>
-        </div>
-      </Section>
+      {course.laRucheNote?.trim() && (
+        <Section bg="warm">
+          <div className="max-w-3xl">
+            <Reveal>
+              <p className="wordmark text-xs text-terracotta">
+                The La Ruche difference
+              </p>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-4 font-serif text-3xl md:text-4xl text-deep leading-tight">
+                {course.laRucheNote}
+              </p>
+            </Reveal>
+          </div>
+        </Section>
+      )}
 
       <Section bg="cream">
         <div className="max-w-2xl mx-auto text-center">
