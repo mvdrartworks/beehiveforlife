@@ -275,32 +275,7 @@ export default async function CoursePage({ params }: Params) {
             </Reveal>
           </div>
 
-          <Reveal delay={0.2}>
-            <div className="bg-card rounded-2xl p-8 border border-honey/15 shadow-card">
-              <p className="wordmark text-xs text-terracotta">
-                Member discounts
-              </p>
-              <ul className="mt-4 divide-y divide-honey/15">
-                {course.memberDiscounts.map((d) => (
-                  <li
-                    key={d.tier}
-                    className="py-3 flex items-center justify-between gap-4"
-                  >
-                    <span className="font-serif text-lg text-deep">
-                      {d.tier}
-                    </span>
-                    <span className="text-sm text-charcoal text-right">
-                      {d.value}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-sm text-charcoal-muted leading-relaxed">
-                The course is a separate purchase and is not included in any
-                membership. Members receive the discounts above.
-              </p>
-            </div>
-          </Reveal>
+          {/* Member discounts hidden: memberships don't exist yet. */}
         </div>
       </Section>
 

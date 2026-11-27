@@ -104,17 +104,9 @@ export default async function CoursesPage() {
                         </span>
                       </dd>
                     </div>
-                    <div>
-                      <dt className="wordmark text-[0.7rem] text-charcoal-muted">
-                        Member discount
-                      </dt>
-                      <dd className="mt-1 text-charcoal">Up to 15% off</dd>
-                    </div>
                   </dl>
 
-                  <div className="mt-6 text-sm text-charcoal-muted leading-relaxed">
-                    <p>{course.memberDiscountSummary}</p>
-                  </div>
+                  {/* Member prices hidden: memberships don't exist yet. */}
 
                   <div className="mt-8">
                     <ButtonLink href={`/courses/${course.slug}`}>
