@@ -1,3 +1,8 @@
+// Privacy-friendly players: YouTube's no-cookie domain, and Vimeo with
+// dnt=1 (Do Not Track: no session cookies or analytics for the viewer).
+const youtube = (id: string) => `https://www.youtube-nocookie.com/embed/${id}`;
+const vimeo = (id: string) => `https://player.vimeo.com/video/${id}?dnt=1`;
+
 type ParsedVideo =
   | { provider: "youtube"; src: string }
   | { provider: "vimeo"; src: string }
@@ -10,27 +15,27 @@ function parseVideoUrl(url: string): ParsedVideo {
 
     if (host === "youtu.be") {
       const id = u.pathname.replace(/^\//, "").split("/")[0];
-      if (id) return { provider: "youtube", src: `https://www.youtube.com/embed/${id}` };
+      if (id) return { provider: "youtube", src: youtube(id) };
     }
     if (host === "youtube.com" || host === "m.youtube.com") {
       if (u.pathname === "/watch") {
         const id = u.searchParams.get("v");
-        if (id) return { provider: "youtube", src: `https://www.youtube.com/embed/${id}` };
+        if (id) return { provider: "youtube", src: youtube(id) };
       }
       const embed = u.pathname.match(/^\/(embed|shorts)\/([^/?#]+)/);
       if (embed) {
-        return { provider: "youtube", src: `https://www.youtube.com/embed/${embed[2]}` };
+        return { provider: "youtube", src: youtube(embed[2]) };
       }
     }
     if (host === "vimeo.com") {
       const id = u.pathname.replace(/^\//, "").split("/")[0];
       if (id && /^\d+$/.test(id)) {
-        return { provider: "vimeo", src: `https://player.vimeo.com/video/${id}` };
+        return { provider: "vimeo", src: vimeo(id) };
       }
     }
     if (host === "player.vimeo.com") {
       const m = u.pathname.match(/^\/video\/(\d+)/);
-      if (m) return { provider: "vimeo", src: `https://player.vimeo.com/video/${m[1]}` };
+      if (m) return { provider: "vimeo", src: vimeo(m[1]) };
     }
   } catch {
     return null;

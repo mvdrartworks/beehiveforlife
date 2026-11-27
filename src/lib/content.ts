@@ -808,3 +808,34 @@ export async function getTestimonials(): Promise<Testimonial[]> {
   const result = await sanityFetch<Testimonial[]>(TESTIMONIALS_QUERY, {}, []);
   return Array.isArray(result) ? result : [];
 }
+
+
+// ---------------------------------------------------------------------------
+// Legal pages (Terms, Privacy, Legal notice)
+// ---------------------------------------------------------------------------
+
+export type LegalPageType =
+  | "beehiveTermsPage"
+  | "beehivePrivacyPage"
+  | "beehiveLegalNoticePage";
+
+export type LegalPage = {
+  heading?: string;
+  lastUpdated?: string;
+  body: PortableTextBlock[];
+};
+
+// Empty body (not written yet, or Sanity unreachable) -> the page keeps its
+// "coming soon" placeholder.
+export async function getLegalPage(type: LegalPageType): Promise<LegalPage> {
+  const result = await sanityFetch<Partial<LegalPage> | null>(
+    `*[_type == $type][0]{ heading, lastUpdated, body }`,
+    { type },
+    null,
+  );
+  return {
+    heading: result?.heading?.trim() || undefined,
+    lastUpdated: result?.lastUpdated || undefined,
+    body: Array.isArray(result?.body) ? result.body : [],
+  };
+}

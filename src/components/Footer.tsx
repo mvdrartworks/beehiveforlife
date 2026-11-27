@@ -66,6 +66,7 @@ export default function Footer() {
           <div className="flex gap-5">
             <Link href="/privacy" className="hover:text-terracotta">Privacy</Link>
             <Link href="/terms" className="hover:text-terracotta">Terms</Link>
+            <Link href="/legal-notice" className="hover:text-terracotta">Legal notice</Link>
             <Link href="/faq" className="hover:text-terracotta">FAQ</Link>
           </div>
         </div>
