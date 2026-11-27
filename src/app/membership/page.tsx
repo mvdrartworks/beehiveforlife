@@ -2,19 +2,21 @@ import type { Metadata } from "next";
 import Section from "@/components/Section";
 import Reveal from "@/components/Reveal";
 import { ButtonLink } from "@/components/Button";
-import { getMembership, getFaqs } from "@/lib/content";
+import { getMembershipNote, getFaqs } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Membership",
   description:
-    "Choose the Beehive for Life membership that fits your creative journey. Two tiers: Seedling and Worker Bee.",
+    "A members' community is in the works at Beehive for Life. Join the waiting list to hear about it first.",
 };
 
 export const revalidate = 60;
 
+// No membership can be joined yet: the page only shows a short note (edited
+// in the studio) with a link to the waiting list. No tiers, no prices.
 export default async function MembershipPage() {
-  const [membership, faqs] = await Promise.all([
-    getMembership(),
+  const [note, faqs] = await Promise.all([
+    getMembershipNote(),
     getFaqs("membership"),
   ]);
 
@@ -27,125 +29,61 @@ export default async function MembershipPage() {
           </Reveal>
           <Reveal delay={0.1}>
             <h1 className="mt-3 font-serif text-5xl md:text-6xl text-deep leading-[1.05]">
-              Join the Hive
+              {note.heading}
             </h1>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-6 text-xl md:text-2xl text-charcoal leading-relaxed">
-              Choose the membership that fits your creative journey.
+            <p className="mt-6 text-xl md:text-2xl text-charcoal leading-relaxed whitespace-pre-line">
+              {note.note}
             </p>
           </Reveal>
+          <Reveal delay={0.3}>
+            <div className="mt-8">
+              <ButtonLink href="/waitlist">{note.linkLabel}</ButtonLink>
+            </div>
+          </Reveal>
         </div>
       </Section>
 
-      <Section bg="ivory">
-        <div className="grid md:grid-cols-2 gap-6">
-          {membership.tiers.map((t, i) => (
-            <Reveal key={t.slug} delay={i * 0.08}>
-              <article
-                className={`relative h-full rounded-2xl p-8 md:p-10 border transition-all duration-500 ease-hive hover:-translate-y-1 hover:shadow-warm ${
-                  t.highlight
-                    ? "bg-honey/15 border-honey/50"
-                    : "bg-card border-honey/15 shadow-card"
-                }`}
-              >
-                {t.highlight && (
-                  <span className="absolute top-5 right-5 text-[0.7rem] tracking-widest uppercase bg-terracotta text-cream px-3 py-1 rounded-full">
-                    Most popular
-                  </span>
-                )}
-                <div className="text-3xl">{t.emoji}</div>
-                <h2 className="mt-3 font-serif text-3xl md:text-4xl text-deep">
-                  {t.name}
-                </h2>
-                <p className="mt-2 text-sm text-charcoal-muted">
-                  {t.tagline}
-                </p>
-
-                <div className="mt-6 flex items-baseline gap-3 flex-wrap">
-                  <span className="font-serif text-4xl text-terracotta">
-                    €{t.monthlyPrice}
-                  </span>
-                  <span className="text-sm text-charcoal-muted">/month</span>
-                  <span className="text-charcoal-muted">·</span>
-                  <span className="text-charcoal">€{t.annualPrice}/year</span>
-                  <span className="text-xs text-honey wordmark">
-                    2 months free
-                  </span>
-                </div>
-
-                <ul className="mt-8 space-y-3">
-                  {t.features.map((f) => (
-                    <li
-                      key={f}
-                      className="flex gap-3 text-charcoal leading-relaxed"
-                    >
-                      <span className="text-honey mt-1">✦</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="mt-8 text-sm text-charcoal-muted italic">
-                  Perfect for: {t.perfectFor}
-                </p>
-
-                <div className="mt-8">
-                  <ButtonLink
-                    href={`mailto:hello@beehiveforlife.com?subject=${encodeURIComponent(
-                      `Membership enquiry: ${t.name}`
-                    )}`}
-                  >
-                    Join now
-                  </ButtonLink>
-                </div>
-              </article>
+      {faqs.length > 0 && (
+        <Section bg="cream">
+          <div className="max-w-3xl mx-auto">
+            <Reveal>
+              <p className="wordmark text-xs text-terracotta text-center">
+                FAQ
+              </p>
             </Reveal>
-          ))}
-        </div>
+            <Reveal delay={0.1}>
+              <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep text-center">
+                Frequently asked
+              </h2>
+            </Reveal>
 
-        <Reveal delay={0.3}>
-          <p className="mt-10 text-center text-charcoal-muted">
-            Not sure? Start with Seedling, upgrade anytime.
-          </p>
-        </Reveal>
-      </Section>
-
-      <Section bg="cream">
-        <div className="max-w-3xl mx-auto">
-          <Reveal>
-            <p className="wordmark text-xs text-terracotta text-center">FAQ</p>
-          </Reveal>
-          <Reveal delay={0.1}>
-            <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep text-center">
-              Frequently asked
-            </h2>
-          </Reveal>
-
-          <div className="mt-12 divide-y divide-honey/20 border-y border-honey/20">
-            {faqs.map((item, i) => (
-              <Reveal key={item.question} delay={i * 0.05}>
-                <details className="group py-6">
-                  <summary className="flex items-center justify-between cursor-pointer list-none">
-                    <span className="font-serif text-xl md:text-2xl text-deep pr-6">
-                      {item.question}
-                    </span>
-                    <span
-                      aria-hidden
-                      className="text-2xl text-honey transition-transform duration-300 group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <p className="mt-4 text-charcoal leading-relaxed">
-                    {item.answer}
-                  </p>
-                </details>
-              </Reveal>
-            ))}
+            <div className="mt-12 divide-y divide-honey/20 border-y border-honey/20">
+              {faqs.map((item, i) => (
+                <Reveal key={item.question} delay={i * 0.05}>
+                  <details className="group py-6">
+                    <summary className="flex items-center justify-between cursor-pointer list-none">
+                      <span className="font-serif text-xl md:text-2xl text-deep pr-6">
+                        {item.question}
+                      </span>
+                      <span
+                        aria-hidden
+                        className="text-2xl text-honey transition-transform duration-300 group-open:rotate-45"
+                      >
+                        +
+                      </span>
+                    </summary>
+                    <p className="mt-4 text-charcoal leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </details>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </Section>
+        </Section>
+      )}
     </>
   );
 }

@@ -60,6 +60,7 @@ export type Faq = {
   answer: string;
   category: string;
   order: number;
+  onlyWhenMembershipsOpen?: boolean;
 };
 
 export type Membership = {
@@ -394,7 +395,8 @@ const FAQ_QUERY = `*[_type == "beehiveFaq" && category == $category] | order(ord
   question,
   answer,
   category,
-  order
+  order,
+  onlyWhenMembershipsOpen
 }`;
 
 function isCourseValid(c: Course | null | undefined): c is Course {
@@ -472,12 +474,63 @@ export async function getMembership(): Promise<Membership> {
   return FALLBACK_MEMBERSHIP;
 }
 
+// The "Adhésions ouvertes" switch in the studio's site settings.
+export async function areMembershipsOpen(): Promise<boolean> {
+  const open = await sanityFetch<boolean | null>(
+    `*[_type == "beehiveSiteSettings"][0].membershipsOpen`,
+    {},
+    null
+  );
+  return open === true;
+}
+
 export async function getFaqs(category: string): Promise<Faq[]> {
   const fallback =
     category === "membership" ? FALLBACK_FAQ_MEMBERSHIP : FALLBACK_FAQ_GENERAL;
-  const result = await sanityFetch<Faq[]>(FAQ_QUERY, { category }, []);
-  if (Array.isArray(result) && result.length > 0) return result;
-  return fallback;
+  const [result, open] = await Promise.all([
+    sanityFetch<Faq[]>(FAQ_QUERY, { category }, []),
+    areMembershipsOpen(),
+  ]);
+  if (Array.isArray(result) && result.length > 0) {
+    // While memberships are closed, questions ticked "only when memberships
+    // are open" are left out.
+    return open ? result : result.filter((f) => !f.onlyWhenMembershipsOpen);
+  }
+  // The built-in fallback questions have no tick box: while closed, leave
+  // out the ones about memberships.
+  return fallback.filter((f) => open || !/membership/i.test(f.question));
+}
+
+// The note shown on /membership while there is no membership to join.
+export type MembershipNote = {
+  heading: string;
+  note: string;
+  linkLabel: string;
+};
+
+const MEMBERSHIP_NOTE_DEFAULTS: MembershipNote = {
+  heading: "The Hive community: coming later",
+  note: "A members' community is in the works. Join the waiting list to hear about it first.",
+  linkLabel: "Join the waiting list →",
+};
+
+export async function getMembershipNote(): Promise<MembershipNote> {
+  const result = await sanityFetch<{
+    comingSoonHeading?: string | null;
+    comingSoonNote?: string | null;
+    comingSoonLinkLabel?: string | null;
+  } | null>(
+    `*[_type == "beehiveMembership"][0]{ comingSoonHeading, comingSoonNote, comingSoonLinkLabel }`,
+    {},
+    null
+  );
+  return {
+    heading:
+      result?.comingSoonHeading?.trim() || MEMBERSHIP_NOTE_DEFAULTS.heading,
+    note: result?.comingSoonNote?.trim() || MEMBERSHIP_NOTE_DEFAULTS.note,
+    linkLabel:
+      result?.comingSoonLinkLabel?.trim() || MEMBERSHIP_NOTE_DEFAULTS.linkLabel,
+  };
 }
 
 // ---------------------------------------------------------------------------

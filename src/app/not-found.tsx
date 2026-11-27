@@ -16,8 +16,8 @@ export default function NotFound() {
             home page
           </Link>{" "}
           or browse{" "}
-          <Link href="/membership" className="text-terracotta link-underline">
-            membership
+          <Link href="/courses" className="text-terracotta link-underline">
+            courses
           </Link>
           .
         </p>

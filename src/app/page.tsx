@@ -9,7 +9,6 @@ import VideoEmbed from "@/components/VideoEmbed";
 import RichText from "@/components/RichText";
 import {
   getHomepage,
-  getMembership,
   getFeaturedCourse,
   getTestimonials,
 } from "@/lib/content";
@@ -25,14 +24,11 @@ const HERO_RATIO = "min-h-[34rem] md:min-h-0 md:aspect-[21/9]";
 const HERO_FRAME = `relative ${HERO_RATIO} w-full overflow-hidden`;
 
 export default async function HomePage() {
-  const [homepage, membership, featuredCourse, testimonials] =
-    await Promise.all([
-      getHomepage(),
-      getMembership(),
-      getFeaturedCourse(),
-      getTestimonials(),
-    ]);
-  const tiers = membership.tiers;
+  const [homepage, featuredCourse, testimonials] = await Promise.all([
+    getHomepage(),
+    getFeaturedCourse(),
+    getTestimonials(),
+  ]);
 
   return (
     <>
@@ -208,62 +204,6 @@ export default async function HomePage() {
               />
             )}
           </Reveal>
-        </div>
-      </Section>
-
-      {/* Membership overview */}
-      <Section bg="ivory">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <Reveal>
-              <p className="wordmark text-xs text-terracotta">Membership</p>
-            </Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="mt-3 font-serif text-4xl md:text-5xl text-deep">
-                Find your tier in the hive
-              </h2>
-            </Reveal>
-          </div>
-          <Reveal delay={0.2}>
-            <Link
-              href="/membership"
-              className="text-terracotta link-underline self-start md:self-end"
-            >
-              Explore all membership benefits →
-            </Link>
-          </Reveal>
-        </div>
-
-        <div className="mt-12 grid sm:grid-cols-2 gap-5 max-w-4xl">
-          {tiers.map((t, i) => (
-            <Reveal key={t.slug} delay={i * 0.08}>
-              <Link
-                href="/membership"
-                className={`block h-full rounded-2xl p-6 border transition-all duration-500 ease-hive hover:-translate-y-1 hover:shadow-warm ${
-                  t.highlight
-                    ? "bg-honey/15 border-honey/50"
-                    : "bg-card border-honey/15 shadow-card"
-                }`}
-              >
-                <div className="text-2xl">{t.emoji}</div>
-                <h3 className="mt-3 font-serif text-2xl text-deep">
-                  {t.name}
-                </h3>
-                <p className="mt-2 text-sm text-charcoal-muted">
-                  {t.tagline}
-                </p>
-                <p className="mt-5 font-serif text-3xl text-terracotta">
-                  €{t.monthlyPrice}
-                  <span className="text-sm text-charcoal-muted font-sans">
-                    {" "}/month
-                  </span>
-                </p>
-                <p className="text-xs text-charcoal-muted mt-1">
-                  €{t.annualPrice}/year
-                </p>
-              </Link>
-            </Reveal>
-          ))}
         </div>
       </Section>
 
@@ -506,9 +446,6 @@ function HeroOverlay({
         )}
         <Reveal delay={0.4}>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
-            <ButtonLink href="/membership" variant="primary">
-              Explore Membership
-            </ButtonLink>
             <ButtonLink
               href="/courses"
               variant="secondary"
